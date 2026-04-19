@@ -81,3 +81,9 @@ npm rundev
 ---
 
 📝 History of changes
+
+### 2026-04-20
+- Project structure configuration (backend, frontend, docs)
+- Adding TypeScript config documentation
+- `.gitignore` configuration
+- First launch of the backend and frontend
