@@ -26,7 +26,7 @@ public class UserRegistrationService {
             errors.put("email", "Email [%s] is already taken".formatted(user.getEmail()));
         }
 
-        if (userRepository.existsByEmail(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             errors.put("username", "Username [%s] is already taken".formatted(user.getUsername()));
         }
 
