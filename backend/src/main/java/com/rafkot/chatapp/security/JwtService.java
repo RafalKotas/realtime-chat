@@ -1,6 +1,7 @@
 package com.rafkot.chatapp.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -17,9 +18,9 @@ public class JwtService {
 
     private final JwtEncoder jwtEncoder;
 
-    public String generateToken(final String username) {
+    public String generateToken(final Authentication authentication) {
         final var claimsSet = JwtClaimsSet.builder()
-                .subject(username)
+                .subject(authentication.getName())
                 .issuer(issuer)
                 .expiresAt(Instant.now().plus(ttl))
                 .build();
