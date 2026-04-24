@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserRegistrationMapper {
 
-    public static User toEntity(RegistrationRequestDto registrationRequestDtoDTO) {
+    public User toEntity(RegistrationRequestDto request) {
         final User user = new User();
 
-        user.setEmail(registrationRequestDtoDTO.email());
-        user.setUsername(registrationRequestDtoDTO.username());
-        user.setPassword(registrationRequestDtoDTO.password());
+        user.setEmail(request.email());
+        user.setUsername(request.username());
+        user.setPassword(request.password());
 
         return user;
     }
@@ -21,7 +21,7 @@ public class UserRegistrationMapper {
             final User user) {
 
         return new RegistrationResponseDto(
-                user.getEmail(), user.getUsername()
+                user.getUsername(), user.getEmail()
         );
     }
 
