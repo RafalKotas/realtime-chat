@@ -40,7 +40,7 @@ public class JwtConfig {
 
     @Bean
     public JwtEncoder jwtEncoder() {
-        final var jwk = new RSAKey.Builder(getPublicKey())
+        final RSAKey jwk = new RSAKey.Builder(getPublicKey())
                 .privateKey(getPrivateKey())
                 .build();
 
