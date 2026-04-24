@@ -3,16 +3,14 @@ package com.rafkot.chatapp.security.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
-import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Profile("!test")
@@ -20,26 +18,23 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            final HttpSecurity http
-    ) {
-
+    @Order(1)
+    SecurityFilterChain authSecurity(HttpSecurity http) {
         return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/user/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(server -> server
-                        .jwt(Customizer.withDefaults())
-                        .authenticationEntryPoint(
-                                new BearerTokenAuthenticationEntryPoint())
-                        .accessDeniedHandler(
-                                new BearerTokenAccessDeniedHandler())
-                        )
+                .securityMatcher("/api/auth/**")
+                .csrf(AbstractHttpConfigurer::disable) // disabled because API is stateless and uses JWT (no cookies)
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .build();
+    }
+
+    @Bean
+    @Order(2)
+    SecurityFilterChain apiSecurity(HttpSecurity http) {
+        return http
+                .securityMatcher("/api/**")
+                .csrf(AbstractHttpConfigurer::disable) // disabled because API is stateless and uses JWT (no cookies)
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
                 .build();
     }
 
