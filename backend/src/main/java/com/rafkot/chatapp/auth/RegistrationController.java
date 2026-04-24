@@ -1,9 +1,9 @@
-package com.rafkot.chatapp.security;
+package com.rafkot.chatapp.security.auth;
 
-import com.rafkot.chatapp.security.dto.RegistrationRequestDto;
-import com.rafkot.chatapp.security.dto.RegistrationResponseDto;
+import com.rafkot.chatapp.security.auth.dto.RegistrationRequestDto;
+import com.rafkot.chatapp.security.auth.dto.RegistrationResponseDto;
 import com.rafkot.chatapp.user.User;
-import com.rafkot.chatapp.user.UserRegistrationMapper;
+import com.rafkot.chatapp.user.mapper.UserRegistrationMapper;
 import com.rafkot.chatapp.user.UserRegistrationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

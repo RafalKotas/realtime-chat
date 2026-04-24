@@ -1,8 +1,7 @@
-package com.rafkot.chatapp.security;
+package com.rafkot.chatapp.security.auth;
 
-import com.rafkot.chatapp.AuthenticationService;
-import com.rafkot.chatapp.security.dto.AuthenticationRequestDto;
-import com.rafkot.chatapp.security.dto.AuthenticationResponseDto;
+import com.rafkot.chatapp.security.auth.dto.AuthenticationRequestDto;
+import com.rafkot.chatapp.security.auth.dto.AuthenticationResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

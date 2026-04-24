@@ -1,4 +1,4 @@
-package com.rafkot.chatapp.security;
+package com.rafkot.chatapp.security.auth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
