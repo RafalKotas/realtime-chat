@@ -1,25 +1,17 @@
 package com.rafkot.chatapp.user;
 
-
-import jakarta.persistence.*;
+import com.rafkot.chatapp.AuditableEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.Instant;
-import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class User extends AuditableEntity {
 
     @Column(nullable = false, unique = true)
     String username;
@@ -29,12 +21,4 @@ public class User {
 
     @Column(nullable = false)
     private String password;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @CreatedDate
-    private Instant createdAt;
-
-    @Column(name = "updated_at")
-    @LastModifiedDate
-    private Instant updatedAt;
 }
