@@ -29,7 +29,7 @@ public class RegistrationController {
             @Valid @RequestBody final RegistrationRequestDto registrationDTO) {
 
         final User registeredUser = userRegistrationService
-                .registerUser(UserRegistrationMapper.toEntity(registrationDTO));
+                .registerUser(userRegistrationMapper.toEntity(registrationDTO));
 
 
         log.info("User [%s with email %s] registered successfully".formatted(registeredUser.getUsername(), registeredUser.getEmail()));
