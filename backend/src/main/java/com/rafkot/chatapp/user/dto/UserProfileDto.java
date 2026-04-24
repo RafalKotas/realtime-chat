@@ -1,4 +1,4 @@
 package com.rafkot.chatapp.user.dto;
 
-public record UserProfileDto(String email, String username) {
+public record UserProfileDto(String username, String email) {
 }
