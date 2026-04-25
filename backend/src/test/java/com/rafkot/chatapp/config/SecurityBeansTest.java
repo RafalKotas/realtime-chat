@@ -1,4 +1,4 @@
-package com.rafkot.chatapp.security.config;
+package com.rafkot.chatapp.config;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

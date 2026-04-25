@@ -1,4 +1,4 @@
-package com.rafkot.chatapp.security;
+package com.rafkot.chatapp.auth;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

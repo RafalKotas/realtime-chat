@@ -1,6 +1,7 @@
 package com.rafkot.chatapp;
 
-import com.rafkot.chatapp.security.JwtService;
+import com.rafkot.chatapp.auth.JwtService;
+import com.rafkot.chatapp.config.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;

@@ -1,4 +1,4 @@
-package com.rafkot.chatapp;
+package com.rafkot.chatapp.config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

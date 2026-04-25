@@ -1,8 +1,8 @@
-package com.rafkot.chatapp.security;
+package com.rafkot.chatapp.auth;
 
-import com.rafkot.chatapp.security.dto.RegistrationResponseDto;
+import com.rafkot.chatapp.auth.dto.RegistrationResponseDto;
 import com.rafkot.chatapp.user.User;
-import com.rafkot.chatapp.user.UserRegistrationMapper;
+import com.rafkot.chatapp.user.mapper.UserRegistrationMapper;
 import com.rafkot.chatapp.user.UserRegistrationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ class RegistrationControllerTest {
         // when + then
         assertThat(mockMvcTester.post()
                 .uri("/api/auth/register")
-                .with(csrf()) // TODO documentation - without this entry -> 403
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(request))
                 .hasStatusOk()

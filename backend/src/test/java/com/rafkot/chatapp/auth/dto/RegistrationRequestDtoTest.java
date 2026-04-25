@@ -1,5 +1,6 @@
-package com.rafkot.chatapp.security.dto;
+package com.rafkot.chatapp.auth.dto;
 
+import com.rafkot.chatapp.auth.dto.RegistrationRequestDto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

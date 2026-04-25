@@ -1,6 +1,7 @@
-package com.rafkot.chatapp.security.config;
+package com.rafkot.chatapp.config;
 
-import com.rafkot.chatapp.security.JwtService;
+import com.rafkot.chatapp.auth.JwtService;
+import com.rafkot.chatapp.config.JwtConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;

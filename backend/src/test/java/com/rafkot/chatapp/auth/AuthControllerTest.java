@@ -1,7 +1,6 @@
-package com.rafkot.chatapp.security;
+package com.rafkot.chatapp.auth;
 
-import com.rafkot.chatapp.AuthenticationService;
-import com.rafkot.chatapp.security.dto.AuthenticationResponseDto;
+import com.rafkot.chatapp.auth.dto.AuthenticationResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;

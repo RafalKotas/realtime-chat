@@ -1,8 +1,7 @@
-package com.rafkot.chatapp;
+package com.rafkot.chatapp.auth;
 
-import com.rafkot.chatapp.security.JwtService;
-import com.rafkot.chatapp.security.dto.AuthenticationRequestDto;
-import com.rafkot.chatapp.security.dto.AuthenticationResponseDto;
+import com.rafkot.chatapp.auth.dto.AuthenticationRequestDto;
+import com.rafkot.chatapp.auth.dto.AuthenticationResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
