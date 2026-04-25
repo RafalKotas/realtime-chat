@@ -1,6 +1,6 @@
-package com.rafkot.chatapp.security.config;
+package com.rafkot.chatapp.config;
 
-import com.rafkot.chatapp.security.auth.JwtService;
+import com.rafkot.chatapp.auth.JwtService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;

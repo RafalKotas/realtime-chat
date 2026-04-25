@@ -1,4 +1,4 @@
-package com.rafkot.chatapp.security.auth.dto;
+package com.rafkot.chatapp.auth.dto;
 
 public record RegistrationResponseDto (
         String username,

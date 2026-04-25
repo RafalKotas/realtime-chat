@@ -1,7 +1,7 @@
-package com.rafkot.chatapp.security.auth;
+package com.rafkot.chatapp.auth;
 
-import com.rafkot.chatapp.security.auth.dto.AuthenticationRequestDto;
-import com.rafkot.chatapp.security.auth.dto.AuthenticationResponseDto;
+import com.rafkot.chatapp.auth.dto.AuthenticationRequestDto;
+import com.rafkot.chatapp.auth.dto.AuthenticationResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

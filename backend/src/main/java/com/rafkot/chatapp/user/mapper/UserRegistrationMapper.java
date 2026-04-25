@@ -1,7 +1,8 @@
-package com.rafkot.chatapp.user;
+package com.rafkot.chatapp.user.mapper;
 
-import com.rafkot.chatapp.security.dto.RegistrationRequestDto;
-import com.rafkot.chatapp.security.dto.RegistrationResponseDto;
+import com.rafkot.chatapp.auth.dto.RegistrationRequestDto;
+import com.rafkot.chatapp.auth.dto.RegistrationResponseDto;
+import com.rafkot.chatapp.user.User;
 import org.springframework.stereotype.Component;
 
 @Component

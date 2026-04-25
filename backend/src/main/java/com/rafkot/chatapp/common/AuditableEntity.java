@@ -1,4 +1,4 @@
-package com.rafkot.chatapp;
+package com.rafkot.chatapp.common;
 
 import jakarta.persistence.*;
 import lombok.Getter;

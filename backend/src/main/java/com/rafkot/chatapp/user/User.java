@@ -1,6 +1,6 @@
 package com.rafkot.chatapp.user;
 
-import com.rafkot.chatapp.AuditableEntity;
+import com.rafkot.chatapp.common.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

@@ -1,4 +1,4 @@
-package com.rafkot.chatapp;
+package com.rafkot.chatapp.user.mapper;
 
 import com.rafkot.chatapp.user.User;
 import com.rafkot.chatapp.user.dto.UserProfileDto;

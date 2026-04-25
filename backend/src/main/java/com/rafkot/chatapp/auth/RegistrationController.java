@@ -1,7 +1,7 @@
-package com.rafkot.chatapp.security.auth;
+package com.rafkot.chatapp.auth;
 
-import com.rafkot.chatapp.security.auth.dto.RegistrationRequestDto;
-import com.rafkot.chatapp.security.auth.dto.RegistrationResponseDto;
+import com.rafkot.chatapp.auth.dto.RegistrationRequestDto;
+import com.rafkot.chatapp.auth.dto.RegistrationResponseDto;
 import com.rafkot.chatapp.user.User;
 import com.rafkot.chatapp.user.mapper.UserRegistrationMapper;
 import com.rafkot.chatapp.user.UserRegistrationService;

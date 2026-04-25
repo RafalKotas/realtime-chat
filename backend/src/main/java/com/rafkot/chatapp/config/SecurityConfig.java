@@ -1,4 +1,4 @@
-package com.rafkot.chatapp.security.config;
+package com.rafkot.chatapp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

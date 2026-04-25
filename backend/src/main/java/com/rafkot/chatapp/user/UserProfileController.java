@@ -1,6 +1,6 @@
 package com.rafkot.chatapp.user;
 
-import com.rafkot.chatapp.UserMapper;
+import com.rafkot.chatapp.user.mapper.UserMapper;
 import com.rafkot.chatapp.user.dto.UserProfileDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
