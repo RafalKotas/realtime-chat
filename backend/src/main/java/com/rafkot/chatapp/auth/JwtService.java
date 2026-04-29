@@ -33,4 +33,15 @@ public class JwtService {
                 .getTokenValue();
     }
 
+    public String generateToken(String username) {
+        final var claimsSet = JwtClaimsSet.builder()
+                .subject(username)
+                .issuer(issuer)
+                .expiresAt(Instant.now().plus(ttl))
+                .build();
+
+        return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet))
+                .getTokenValue();
+    }
+
 }

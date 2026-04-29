@@ -1,6 +1,6 @@
 package com.rafkot.chatapp.auth;
 
-import com.rafkot.chatapp.auth.dto.AuthenticationResponseDto;
+import com.rafkot.chatapp.auth.dto.LoginResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -33,8 +33,7 @@ class AuthControllerTest {
             }
         """;
 
-        AuthenticationResponseDto response =
-                new AuthenticationResponseDto("jwt-token-123");
+        LoginResponseDto response = new LoginResponseDto("access-token-123", "refresh-token-123");
 
         when(authenticationService.authenticate(any()))
                 .thenReturn(response);
@@ -48,7 +47,8 @@ class AuthControllerTest {
                 .bodyJson()
                 .isLenientlyEqualTo("""
                     {
-                      "token": "jwt-token-123"
+                      "accessToken": "access-token-123",
+                      "refreshToken": "refresh-token-123"
                     }
                 """);
     }

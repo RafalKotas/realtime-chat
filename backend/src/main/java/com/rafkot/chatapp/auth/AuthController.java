@@ -1,7 +1,10 @@
 package com.rafkot.chatapp.auth;
 
 import com.rafkot.chatapp.auth.dto.AuthenticationRequestDto;
-import com.rafkot.chatapp.auth.dto.AuthenticationResponseDto;
+import com.rafkot.chatapp.auth.dto.LoginResponseDto;
+import com.rafkot.chatapp.auth.dto.RefreshRequestDto;
+import com.rafkot.chatapp.auth.dto.RefreshResponseDto;
+import com.rafkot.chatapp.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtService jwtService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDto> authenticate(
@@ -34,6 +39,16 @@ public class AuthController {
         log.info("Response entity: {}", responseEntity.getBody());
 
         return responseEntity;
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshResponseDto> refreshToken(@RequestBody RefreshRequestDto refreshRequestDto) {
+        // refreshToken is source of truth
+        User user = refreshTokenService.validateRefreshToken(refreshRequestDto.refreshToken());
+
+        String newAccessToken = jwtService.generateToken(user.getUsername());
+
+        return ResponseEntity.ok(new RefreshResponseDto(newAccessToken));
     }
 
 }

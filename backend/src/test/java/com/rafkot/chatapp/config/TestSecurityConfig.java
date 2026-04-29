@@ -26,6 +26,7 @@ public class TestSecurityConfig {
     }
 
     @Bean
+    @Primary
     public AuthenticationManager authenticationManager() {
         return authentication ->
                 new UsernamePasswordAuthenticationToken(
