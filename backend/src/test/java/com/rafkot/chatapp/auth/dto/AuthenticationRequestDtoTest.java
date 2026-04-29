@@ -10,18 +10,18 @@ class AuthenticationRequestDtoTest {
     @Test
     void shouldInstantiateAndRetrieveValues() {
         // given
-        String username = "exampleUsername";
+        String login = "exampleUsername";
         String password = "superStrongPassword";
 
         // when
         AuthenticationRequestDto authenticationRequestDto = new AuthenticationRequestDto(
-                username,
+                login,
                 password
         );
 
         // then
         assertNotNull(authenticationRequestDto);
-        assertEquals("exampleUsername", authenticationRequestDto.username());
+        assertEquals("exampleUsername", authenticationRequestDto.login());
         assertEquals("superStrongPassword", authenticationRequestDto.password());
     }
 }
