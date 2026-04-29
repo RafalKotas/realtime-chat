@@ -1,11 +1,11 @@
 package com.rafkot.chatapp;
 
 import com.rafkot.chatapp.auth.JwtService;
+import com.rafkot.chatapp.auth.RefreshTokenService;
 import com.rafkot.chatapp.config.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,13 +20,13 @@ class ChatappApplicationTests {
 	private JwtService jwtService;
 
 	@MockitoBean
+	private RefreshTokenService refreshTokenService;
+
+	@MockitoBean
 	private JwtEncoder jwtEncoder;
 
 	@MockitoBean
 	private JwtDecoder jwtDecoder;
-
-	@MockitoBean
-	private PasswordEncoder passwordEncoder;
 
 	@Test
 	void contextLoads() {
