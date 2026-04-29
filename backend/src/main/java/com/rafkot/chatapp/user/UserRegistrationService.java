@@ -23,11 +23,11 @@ public class UserRegistrationService {
         final Map<String, String> errors = new HashMap<>();
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            errors.put("email", "Email [%s] is already taken".formatted(user.getEmail()));
+            errors.put("email", "Email is already taken");
         }
 
         if (userRepository.existsByUsername(user.getUsername())) {
-            errors.put("username", "Username [%s] is already taken".formatted(user.getUsername()));
+            errors.put("username", "Username is already taken");
         }
 
         if (!errors.isEmpty()) {
