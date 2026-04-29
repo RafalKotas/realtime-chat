@@ -2,6 +2,7 @@ package com.rafkot.chatapp.auth;
 
 import com.rafkot.chatapp.auth.dto.AuthenticationRequestDto;
 import com.rafkot.chatapp.auth.dto.AuthenticationResponseDto;
+import com.rafkot.chatapp.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,9 +32,12 @@ class AuthenticationServiceTest {
     @Mock
     private Authentication authentication;
 
+    @MockitoBean
+    private UserRepository userRepository;
+
     @BeforeEach
     void setUp() {
-        subject = new AuthenticationService(authenticationManager, jwtService);
+        subject = new AuthenticationService(authenticationManager, jwtService, userRepository);
     }
 
     @Test
