@@ -25,10 +25,10 @@ public class AuthController {
     private final JwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponseDto> authenticate(
+    public ResponseEntity<LoginResponseDto> authenticate(
             @RequestBody final AuthenticationRequestDto authenticationRequestDto
     ) {
-        ResponseEntity<AuthenticationResponseDto> responseEntity;
+        ResponseEntity<LoginResponseDto> responseEntity;
 
         log.info("Trying to authenticate user: {}", authenticationRequestDto);
 
