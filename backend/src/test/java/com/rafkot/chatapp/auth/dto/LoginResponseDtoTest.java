@@ -12,14 +12,16 @@ class LoginResponseDtoTest {
         // given
         String accessToken = "test-access-token";
         String refreshToken = "test-refresh-token";
+        String userName = "test-user-name";
 
         // when
         LoginResponseDto loginResponseDto = new LoginResponseDto(
-                accessToken, refreshToken
+                userName, accessToken, refreshToken
         );
 
         // then
         assertNotNull(loginResponseDto);
+        assertEquals("test-user-name", loginResponseDto.username());
         assertEquals("test-access-token", loginResponseDto.accessToken());
         assertEquals("test-refresh-token", loginResponseDto.refreshToken());
     }
