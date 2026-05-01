@@ -1,6 +1,7 @@
 package com.rafkot.chatapp.auth;
 
 import com.rafkot.chatapp.auth.dto.LoginResponseDto;
+import com.rafkot.chatapp.user.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -58,5 +59,36 @@ class AuthControllerTest {
                       "refreshToken": "refresh-token-123"
                     }
                 """);
+    }
+
+    @Test
+    void shouldReturnNewAccessToken() {
+        // given
+        String refreshRequestDto = """
+            {
+              "refreshToken": "test-refresh-token"
+            }
+        """;
+        String expectedAccessToken = "test-access-token-123";
+        User user = new User();
+        String username = "testuser";
+        user.setUsername(username);
+
+        when(refreshTokenService.validateRefreshToken("test-refresh-token")).thenReturn(user);
+        when(jwtService.generateToken(username)).thenReturn(expectedAccessToken);
+
+        // when + then
+        assertThat(mockMvcTester.post()
+                .uri("/api/auth/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(refreshRequestDto))
+                .hasStatusOk()
+                .bodyJson()
+                .isLenientlyEqualTo("""
+                    {
+                      "accessToken": "test-access-token-123"
+                    }
+                """);
+
     }
 }
