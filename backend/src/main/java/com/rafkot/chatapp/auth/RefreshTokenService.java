@@ -2,14 +2,17 @@ package com.rafkot.chatapp.auth;
 
 import com.rafkot.chatapp.user.User;
 import com.rafkot.chatapp.user.UserRepository;
+import com.rafkot.chatapp.user.exception.UserNotFoundException;
 import com.rafkot.chatapp.user.exception.UserValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
+@Service
 public class RefreshTokenService {
 
     @Value("${jwt.refresh-expiration-ms}")
@@ -25,7 +28,7 @@ public class RefreshTokenService {
 
     public RefreshToken createRefreshToken(UUID userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
