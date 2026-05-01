@@ -21,13 +21,13 @@ class SecurityConfigTest {
     private MockMvc mockMvc;
 
     @Test
-    void shouldAllowAuthEndpointsWithoutAuthentication() throws Exception {
+    void shouldNotAllowLoginEndpointWhenUserNotExists() throws Exception {
         // given
         String apiLoginEndpoint = "/api/auth/login";
         String loginRequestContent = """
                             {
-                                "username": "test",
-                                "password": "test"
+                                "login": "nonExistingUser",
+                                "password": "passwordForNonExistingUser"
                             }
                         """;
 
@@ -35,7 +35,7 @@ class SecurityConfigTest {
         mockMvc.perform(post(apiLoginEndpoint)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginRequestContent))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
