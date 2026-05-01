@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,5 +63,39 @@ class JwtServiceTest {
         assertThat((String) claims.getClaim("iss"))
                 .isEqualTo("test-issuer");
         assertThat(claims.getExpiresAt()).isAfter(Instant.now());
+    }
+
+    @Test
+    void shouldGenerateTokenForUsername() {
+        // given
+        String username = "rafal";
+        String expectedToken = "mocked-jwt-token";
+
+        Instant now = Instant.now();
+        Instant expires = now.plus(Duration.ofHours(1));
+
+        Map<String, Object> headers = Map.of("alg", "HS256");
+        Map<String, Object> claims = Map.of(
+                "sub", username,
+                "iss", "my-issuer",
+                "exp", expires.getEpochSecond()
+        );
+
+        Jwt jwt = new Jwt(
+                expectedToken,
+                now,
+                expires,
+                headers,
+                claims
+        );
+
+        when(jwtEncoder.encode(any(JwtEncoderParameters.class)))
+                .thenReturn(jwt);
+
+        // when
+        String token = subject.generateToken(username);
+
+        // then
+        assertThat(token).isEqualTo(expectedToken);
     }
 }
