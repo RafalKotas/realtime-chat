@@ -23,17 +23,23 @@ class AuthControllerTest {
     @MockitoBean
     private AuthenticationService authenticationService;
 
+    @MockitoBean
+    private RefreshTokenService refreshTokenService;
+
+    @MockitoBean
+    private JwtService jwtService;
+
     @Test
     void shouldAuthenticateUser() {
         // given
         String request = """
             {
-              "username": "testuser",
+              "login": "testuser",
               "password": "password"
             }
         """;
 
-        LoginResponseDto response = new LoginResponseDto("access-token-123", "refresh-token-123");
+        LoginResponseDto response = new LoginResponseDto("testuser", "access-token-123", "refresh-token-123");
 
         when(authenticationService.authenticate(any()))
                 .thenReturn(response);
@@ -47,6 +53,7 @@ class AuthControllerTest {
                 .bodyJson()
                 .isLenientlyEqualTo("""
                     {
+                      "username": "testuser",
                       "accessToken": "access-token-123",
                       "refreshToken": "refresh-token-123"
                     }
