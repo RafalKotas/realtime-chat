@@ -1,0 +1,94 @@
+package com.rafkot.chatapp.auth;
+
+import com.rafkot.chatapp.auth.dto.LoginResponseDto;
+import com.rafkot.chatapp.user.User;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.assertj.MockMvcTester;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+@WebMvcTest(AuthController.class)
+@AutoConfigureMockMvc(addFilters = false)
+class AuthControllerTest {
+
+    @Autowired
+    private MockMvcTester mockMvcTester;
+
+    @MockitoBean
+    private AuthenticationService authenticationService;
+
+    @MockitoBean
+    private RefreshTokenService refreshTokenService;
+
+    @MockitoBean
+    private JwtService jwtService;
+
+    @Test
+    void shouldAuthenticateUser() {
+        // given
+        String request = """
+            {
+              "login": "testuser",
+              "password": "password"
+            }
+        """;
+
+        LoginResponseDto response = new LoginResponseDto("testuser", "access-token-123", "refresh-token-123");
+
+        when(authenticationService.authenticate(any()))
+                .thenReturn(response);
+
+        // when + then
+        assertThat(mockMvcTester.post()
+                .uri("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+                .hasStatusOk()
+                .bodyJson()
+                .isLenientlyEqualTo("""
+                    {
+                      "username": "testuser",
+                      "accessToken": "access-token-123",
+                      "refreshToken": "refresh-token-123"
+                    }
+                """);
+    }
+
+    @Test
+    void shouldReturnNewAccessToken() {
+        // given
+        String refreshRequestDto = """
+            {
+              "refreshToken": "test-refresh-token"
+            }
+        """;
+        String expectedAccessToken = "test-access-token-123";
+        User user = new User();
+        String username = "testuser";
+        user.setUsername(username);
+
+        when(refreshTokenService.validateRefreshToken("test-refresh-token")).thenReturn(user);
+        when(jwtService.generateToken(username)).thenReturn(expectedAccessToken);
+
+        // when + then
+        assertThat(mockMvcTester.post()
+                .uri("/api/auth/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(refreshRequestDto))
+                .hasStatusOk()
+                .bodyJson()
+                .isLenientlyEqualTo("""
+                    {
+                      "accessToken": "test-access-token-123"
+                    }
+                """);
+
+    }
+}
