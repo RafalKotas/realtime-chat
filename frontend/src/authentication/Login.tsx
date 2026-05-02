@@ -13,8 +13,15 @@ import { IconKey, IconXboxX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import request from "./authClient";
 import { Alert } from "@/components/ui/alert";
+import { useNavigate } from "react-router-dom";
+import useAuthStore from "./user-store";
+import { Spinner } from "@/components/ui/spinner";
 
 const Login = () => {
+
+  const { setTokens, setUser } = useAuthStore()
+
+  const navigate = useNavigate()
 
   const [login, setLogin] = useState("")
   const [password, setPassword] = useState("")
@@ -45,8 +52,11 @@ const Login = () => {
       },
     })
     .then((response: any) => {
-      console.log(response);
       setLoginSuccess(true)
+      const { accessToken, refreshToken, username } = response;
+      setTokens(accessToken, refreshToken);
+      setUser({ username });
+      navigate("/user-panel")
     })
     .catch((error: any) => {
       console.log(error);
@@ -129,6 +139,7 @@ const Login = () => {
         <Button onClick={handleLogin} disabled={disabled} type="submit" className="w-full" cursor-pointer>
            Login <IconKey />
         </Button>
+        <p className="text-sm text-center">Not logged yet? <button onClick={() => navigate("/signup")} className="text-blue-500 hover:text-blue-700">Sign up</button></p>
       </CardFooter>
     </Card>
   )
