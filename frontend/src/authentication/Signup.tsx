@@ -14,6 +14,7 @@ import { IconEye, IconEyeOff, IconKey, IconXboxX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import request from "./authClient";
 import { Alert } from "@/components/ui/alert";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
     
@@ -26,6 +27,8 @@ const Signup = () => {
     const [showPassword, setShowPassword] = useState(false)
     const [errors, setErrors] = useState<string[]>([])
     const [registerSuccess, setRegisterSuccess] = useState(false)
+
+    const navigate = useNavigate()
 
     type RegisterErrors = {
       email?: string[]
@@ -186,6 +189,7 @@ const Signup = () => {
         <Button onClick={handleSignUp} disabled={disabled} type="submit" className="w-full" cursor-pointer>
            Sign Up <IconKey />
         </Button>
+        <p className="text-sm text-center">Already have an account? <button onClick={() => navigate("/login")} className="text-blue-500 hover:text-blue-700">Login</button></p>
       </CardFooter>
     </Card>
   )

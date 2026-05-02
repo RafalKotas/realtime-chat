@@ -28,6 +28,7 @@ const Login = () => {
   const [disabled, setDisabled] = useState(true)
   const [loginSuccess, setLoginSuccess] = useState(false)
   const [errors, setErrors] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   type LoginErrors = {
     login?: string[]
@@ -43,6 +44,7 @@ const Login = () => {
   }, [login, password])
 
   const handleLogin = async () => {
+    setIsLoading(true)
     await request("/api/auth/login", {
       method: "POST",
       data: { login, password },
@@ -63,6 +65,8 @@ const Login = () => {
       const errorsMap = error.response.data as LoginErrors
       const errorsArray = Object.entries(errorsMap).map(([_, message]) =>  message ).flat()
       setErrors(errorsArray)
+    }).finally(() => {
+      setIsLoading(false)
     });
   }
 
@@ -137,7 +141,7 @@ const Login = () => {
       </CardContent>
       <CardFooter className="flex-col gap-2">
         <Button onClick={handleLogin} disabled={disabled} type="submit" className="w-full" cursor-pointer>
-           Login <IconKey />
+           Login {isLoading ? <Spinner /> : <IconKey />}
         </Button>
         <p className="text-sm text-center">Not logged yet? <button onClick={() => navigate("/signup")} className="text-blue-500 hover:text-blue-700">Sign up</button></p>
       </CardFooter>
