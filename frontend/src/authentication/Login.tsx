@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import request from "./authClient";
 import { Alert } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "./user-store";
+import { useAuthStore } from "./user-store";
 import { Spinner } from "@/components/ui/spinner";
 
 const Login = () => {
@@ -85,7 +85,8 @@ const Login = () => {
   }
 
   return (
-    <Card className="w-full max-w-sm">
+    <div className="flex justify-center items-center h-screen">
+          <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>
@@ -146,6 +147,7 @@ const Login = () => {
         <p className="text-sm text-center">Not logged yet? <button onClick={() => navigate("/signup")} className="text-blue-500 hover:text-blue-700">Sign up</button></p>
       </CardFooter>
     </Card>
+    </div>
   )
 }
 
