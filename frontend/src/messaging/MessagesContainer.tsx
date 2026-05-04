@@ -3,20 +3,14 @@ import { Item, ItemActions, ItemContent} from "@/components/ui/item"
 import { useEffect } from "react"
 import { useAuthStore } from "@/authentication/user-store"
 import { useMessagingStore } from "./messaging-store"
-
-interface Message {
-    id: number;
-    sender: string;
-    receiver: string;
-    message: string;
-    createdAt: string;
-}
+import type { Message } from "./messaging-store"
 
 const MessagesContainer = () => {
 
-    const messages = useMessagingStore((state: any) => state.messages)
+    const {userChats, currentChatReceiverId} = useMessagingStore()
+    const messages = userChats.get(currentChatReceiverId) || []
 
-    const currentUserUsername = useAuthStore((state) => state.user?.username)
+    const loggedUserId = useAuthStore((state) => state.loggedUserId)
 
     useEffect(() => {
         document.getElementById("messages-list")?.scrollTo({
@@ -25,9 +19,9 @@ const MessagesContainer = () => {
         });
     }, [messages]);
 
-    const messageItemStyle = (message: { sender: string; receiver: string; message: string; createdAt: string }) => message.sender === currentUserUsername ? "flex flex-row justify-end" : "flex flex-row justify-start"
-    const itemContentStyle = (message: Message) => message.sender === currentUserUsername ? "bg-lime-300" : "bg-gray-400"
-    const messageDateStyle = (message: Message) => message.sender === currentUserUsername ? "text-right" : "text-left"
+    const messageItemStyle = (message: Message) => message.senderId === loggedUserId ? "flex flex-row justify-end" : "flex flex-row justify-start"
+    const itemContentStyle = (message: Message) => message.senderId === loggedUserId ? "bg-lime-300" : "bg-gray-400"
+    const messageDateStyle = (message: Message) => message.senderId === loggedUserId ? "text-right" : "text-left"
     
     const messageTimeCaption = (createdAt: string) => {
         const messageDate = new Date(createdAt);
@@ -36,7 +30,6 @@ const MessagesContainer = () => {
         const minutes = Math.floor(timeDifference / 60000);
         const hours = Math.floor(minutes / 60);
         const days = Math.abs(currentDate.getDate() - messageDate.getDate());
-
         if (days >= 1) {
             return days === 1 ? "yesterday" : `${days} days ago`;
         }
@@ -52,11 +45,11 @@ const MessagesContainer = () => {
     return (
             <section id="messages-list" className="flex flex-col gap-2 overflow-y-auto">
                 {messages.map((message: Message) => (
-                    <div key={message.id} className="flex flex-col gap-2">
+                    <div key={message.messageId} className="flex flex-col gap-2">
                         <div className={messageItemStyle(message)}>
                             <Item className={"flex flex-row justify-between w-1/3 "+ itemContentStyle(message)} variant="outline">
                                 <ItemContent>
-                                    {message.message}
+                                    {message.messageContent}
                                 </ItemContent>
                                 <ItemActions>
                                     <Button variant="outline" size="sm">

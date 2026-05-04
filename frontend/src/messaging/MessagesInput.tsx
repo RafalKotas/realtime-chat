@@ -11,9 +11,8 @@ const MessagesInput = () => {
     const [message, setMessage] = useState<string>("")
     const [sendButtonDisabled, setSendButtonDisabled] = useState<boolean>(true)
 
-    const currentUserUsername = useAuthStore((state) => state.user?.username)
-    const addMessage = useMessagingStore((state: any) => state.addMessage)
-    const messages = useMessagingStore((state: any) => state.messages)
+    const loggedUserId = useAuthStore((state) => state.loggedUserId)
+    const {addMessageToChat, currentChatReceiverId} = useMessagingStore()
 
     useEffect(() => {
         setSendButtonDisabled(message.length === 0 ? true : false)
@@ -24,14 +23,14 @@ const MessagesInput = () => {
 
     const handleSendMessage = () => {
         const newMessage: Message = {
-            id: (messages[messages.length - 1] as Message).id + 1,
-            sender: currentUserUsername || "",
-            receiver: "John Doe",
-            message: message,
+            messageId: crypto.randomUUID() as string,
+            senderId: loggedUserId || "",
+            receiverId: currentChatReceiverId,
+            messageContent: message,
             createdAt: new Date().toISOString()
         }
         setMessage("");
-        addMessage(newMessage);
+        addMessageToChat(newMessage, currentChatReceiverId);
     }
 
     return (

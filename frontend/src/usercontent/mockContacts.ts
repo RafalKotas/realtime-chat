@@ -1,7 +1,7 @@
 export const mockContacts = [
     {
-      id: 1,
-      name: 'John Doe',
+      id: "54717d52-32d8-4b34-a924-65e210e867e9",
+      name: 'alice12345',
       image: 'https://github.com/shadcn.png',
     },
     {

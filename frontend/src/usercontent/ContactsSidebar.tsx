@@ -12,11 +12,13 @@ import { IconSearch } from '@tabler/icons-react'
 import { mockContacts } from './mockContacts'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useMessagingStore } from '@/messaging/messaging-store'
 
 const ContactsSidebar = () => {
 
   const [contacts, setContacts] = useState<typeof mockContacts>([])
   const [filteredContacts, setFilteredContacts] = useState<typeof mockContacts>([])
+  const {currentChatReceiverId, setCurrentChatReceiverId} = useMessagingStore()
 
   useEffect(() => {
     setContacts(mockContacts)
@@ -37,6 +39,8 @@ const ContactsSidebar = () => {
     return nameParts[0].charAt(0)
   }
 
+  const contactTabBasicStyles = "flex flex-row gap-2 p-2 mb-2 items-center cursor-pointer rounded-md bg-gray-200 hover:bg-lime-300 hover:border-2 hover:border-gray-400 hover:mb-1" 
+
   return (
     <Sidebar className="pt-10">
       <SidebarHeader className="flex flex-row items-center rounded-md">
@@ -49,7 +53,11 @@ const ContactsSidebar = () => {
               {filteredContacts.map((contact) => (
                 <Tooltip>
                   <TooltipTrigger>
-                    <SidebarMenuItem key={contact.id} className="flex flex-row gap-2 p-2 mb-2 items-center cursor-pointer rounded-md bg-gray-200 hover:bg-lime-300 hover:border-2 hover:border-gray-400 hover:mb-1">
+                    <SidebarMenuItem 
+                      key={contact.id} 
+                      className={contactTabBasicStyles + (currentChatReceiverId === contact.id ? " cursor-default hover:bg-green-600 bg-green-600 border-2 border-gray-400" : "")}
+                      onClick={() => setCurrentChatReceiverId(contact.id as string)}
+                    >
                       <Avatar>
                         <AvatarImage src={contact.image} />
                         <AvatarFallback>{imageFallback(contact.name)}</AvatarFallback>
@@ -61,8 +69,8 @@ const ContactsSidebar = () => {
                       </div>
                     </SidebarMenuItem>
                   </TooltipTrigger>
-                  <TooltipContent side="right">
-                    Open chat!
+                  <TooltipContent hidden={currentChatReceiverId === contact.id} side="right">
+                    <p>Open chat!</p>
                   </TooltipContent>
                 </Tooltip>
               ))}
