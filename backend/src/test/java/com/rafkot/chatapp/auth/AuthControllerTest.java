@@ -40,7 +40,11 @@ class AuthControllerTest {
             }
         """;
 
-        LoginResponseDto response = new LoginResponseDto("testuser", "access-token-123", "refresh-token-123");
+        LoginResponseDto response = new LoginResponseDto(
+                "testuser",
+                "testid12345",
+                "access-token-123",
+                "refresh-token-123");
 
         when(authenticationService.authenticate(any()))
                 .thenReturn(response);
@@ -55,6 +59,7 @@ class AuthControllerTest {
                 .isLenientlyEqualTo("""
                     {
                       "username": "testuser",
+                      "userId": "testid12345",
                       "accessToken": "access-token-123",
                       "refreshToken": "refresh-token-123"
                     }

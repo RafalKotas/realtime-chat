@@ -59,16 +59,18 @@ class AuthenticationServiceTest {
 
         String expectedAccessToken = "access-token";
         String expectedRefreshToken = "refresh-token";
+        User user = new User("testuser", "testmail@mail", "testpassword");
+        user.setId(UUID.randomUUID());
 
         RefreshToken refreshToken = new RefreshToken(
                 1L,
-                new User("testuser", "testmail@mail", "testpassword"),
+                user,
                 expectedRefreshToken,
                 Instant.now().plusMillis(86400000)
         );
 
         when(userRepository.findByUsername("testuser"))
-                .thenReturn(Optional.of(new User("testuser", "testmail@mail", "testpassword")));
+                .thenReturn(Optional.of(user));
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
@@ -101,6 +103,7 @@ class AuthenticationServiceTest {
         String expectedRefreshToken = "refresh-token";
 
         User testuser = new User("testuser", "testuser@mail.com", "testpassword");
+        testuser.setId(UUID.randomUUID());
 
         RefreshToken refreshToken = new RefreshToken(
                 1L,
