@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 const LoggedUserHeader = () => {
   const navigate = useNavigate()
 
-  const { removeTokens, user } = useAuthStore()
+  const { removeTokens, loggedUsername } = useAuthStore()
 
   const handleLogout = () => {
     removeTokens()
@@ -19,7 +19,7 @@ const LoggedUserHeader = () => {
     <TooltipProvider>
         <header className="z-50 flex w-full shrink-0 items-center justify-between border-b bg-gray-200 px-2">
             <section>
-                <h1 className="text-sm font-semibold">Welcome <span className="font-bold text-orange-600">{user?.username}</span> to the chat!</h1>
+                <h1 className="text-sm font-semibold">Welcome <span className="font-bold text-orange-600">{loggedUsername}</span> to the chat!</h1>
             </section>
             <section>
                 <Button variant="ghost" size="icon" aria-label="User menu">
