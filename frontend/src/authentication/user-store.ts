@@ -7,20 +7,30 @@ interface AuthState {
     refreshToken: string | null
     setTokens: (accessToken: string, refreshToken: string) => void
     removeTokens: () => void
-    user: { username: string } | null
-    setUser: (user: { username: string }) => void
-    removeUser: () => void
+    loggedUsername: string | null
+    setLoggedUsername: (loggedUsername: string) => void
+    removeLoggedUsername: () => void
+    loggedUserId: string | null
+    setLoggedUserId: (loggedUserId: string) => void
+    removeLoggedUserId: () => void
 }
 
 export const useAuthStore = create<AuthState>()(persist((set) => ({
-    user: null,
+    loggedUsername: null,
+    loggedUserId: null,
     accessToken: localStorage.getItem("accessToken") || null,
     refreshToken: localStorage.getItem("refreshToken") || null,
-    setUser: (user: { username: string }) => {
-        set({ user });
+    setLoggedUserId: (loggedUserId: string) => {
+        set({ loggedUserId });
     },
-    removeUser: () => {
-        set({ user: null });
+    removeLoggedUserId: () => {
+        set({ loggedUserId: null });
+    },
+    setLoggedUsername: (loggedUsername: string) => {
+        set({ loggedUsername });
+    },
+    removeLoggedUsername: () => {
+        set({ loggedUsername: null });
     },
     setTokens: (accessToken: string, refreshToken: string) => {
         if (accessToken) localStorage.setItem("accessToken", accessToken);
