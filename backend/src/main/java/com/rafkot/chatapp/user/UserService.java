@@ -3,6 +3,8 @@ package com.rafkot.chatapp.user;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.UUID;
+
 import static org.springframework.http.HttpStatus.GONE;
 
 @Service
@@ -18,5 +20,9 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(GONE,
                         "The user account has been deleted or inactivated"));
+    }
+
+    public User getUserById(final UUID id) {
+        return userRepository.findById(id).orElseThrow();
     }
 }

@@ -1,9 +1,7 @@
 package com.rafkot.chatapp.auth;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -16,10 +14,13 @@ public class JwtService {
 
     private final JwtEncoder jwtEncoder;
 
-    public JwtService(String issuer, Duration ttl, JwtEncoder jwtEncoder) {
+    private final JwtDecoder jwtDecoder;
+
+    public JwtService(String issuer, Duration ttl, JwtEncoder jwtEncoder,  JwtDecoder jwtDecoder) {
         this.issuer = issuer;
         this.ttl = ttl;
         this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
     }
 
     public String generateToken(final Authentication authentication) {
@@ -42,6 +43,10 @@ public class JwtService {
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet))
                 .getTokenValue();
+    }
+
+    public String getUsernameFromToken(String token) {
+        return jwtDecoder.decode(token).getSubject();
     }
 
 }
