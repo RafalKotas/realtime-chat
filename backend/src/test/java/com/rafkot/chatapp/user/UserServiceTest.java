@@ -1,7 +1,5 @@
 package com.rafkot.chatapp.user;
 
-import com.rafkot.chatapp.user.mapper.UserMapper;
-import com.rafkot.chatapp.user.dto.UserProfileDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -9,6 +7,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -22,26 +21,24 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    UserMapper mapper;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         subject = new UserService(userRepository);
-        mapper = new UserMapper();
     }
 
     @Test
-    void shouldReturnUserWhenUserExists() {
+    void shouldReturnUserByUsernameWhenUserExists() {
         // given
         User user = new User();
-        user.setUsername("testuser");
+        String username = "testuser";
+        user.setUsername(username);
 
-        when(userRepository.findByUsername("testuser"))
+        when(userRepository.findByUsername(username))
                 .thenReturn(Optional.of(user));
 
         // when
-        User result = subject.getUserByUsername("testuser");
+        User result = subject.getUserByUsername(username);
 
         // then
         assertThat(result).isEqualTo(user);
@@ -61,18 +58,21 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldMapUserToUserProfileDto() {
+    void shouldGetUserByIdWhenUserExists() {
         // given
         User user = new User();
-        user.setUsername("testuser");
-        user.setEmail("testuser@mail.com");
+        UUID userId = UUID.fromString("11111-22222-33333-44444-55555");
+        user.setId(userId);
+
+        when(userRepository.findById(userId))
+                .thenReturn(Optional.of(user));
 
         // when
-        UserProfileDto result = mapper.toUserProfileDto(user);
+        User result = subject.getUserById(userId);
 
         // then
-        assertThat(result).isNotNull();
-        assertThat(result.username()).isEqualTo("testuser");
-        assertThat(result.email()).isEqualTo("testuser@mail.com");
+        assertThat(result)
+                .isNotNull()
+                .isEqualTo(user);
     }
 }

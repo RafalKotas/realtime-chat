@@ -49,9 +49,10 @@ class JwtConfigTest {
     void shouldCreateJwtService() {
         // given
         JwtEncoder encoder = subject.jwtEncoder();
+        JwtDecoder decoder = subject.jwtDecoder();
 
         // when
-        JwtService service = subject.jwtService("test-app", encoder);
+        JwtService service = subject.jwtService("test-app", encoder, decoder);
 
         // then
         assertThat(service).isNotNull();

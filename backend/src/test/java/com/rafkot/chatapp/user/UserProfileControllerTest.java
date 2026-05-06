@@ -13,6 +13,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
@@ -38,8 +40,10 @@ class UserProfileControllerTest {
         User user = new User();
         user.setUsername("testuser");
         user.setEmail("testuser@mail.com");
+        UUID userId = UUID.fromString("11111111-2222-3333-4444-555555555555");
 
         UserProfileDto dto = new UserProfileDto(
+                userId,
                 "testuser",
                 "testuser@mail.com"
         );
@@ -55,6 +59,7 @@ class UserProfileControllerTest {
                 .bodyJson()
                 .isLenientlyEqualTo("""
                     {
+                      "id": "11111111-2222-3333-4444-555555555555",
                       "email": "testuser@mail.com",
                       "username": "testuser"
                     }
