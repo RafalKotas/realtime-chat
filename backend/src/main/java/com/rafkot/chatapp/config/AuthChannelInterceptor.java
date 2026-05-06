@@ -36,7 +36,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
                 log.info("WS CONNECT headers: {}", authHeaders);
 
                 // TODO - implement custom exception
-                if (authHeaders == null || authHeaders.isEmpty()) {
+                if (authHeaders == null) {
                     throw new IllegalArgumentException("Missing Authorization header");
                 }
 
