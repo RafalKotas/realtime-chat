@@ -1,33 +1,43 @@
 import { create } from "zustand"
-import defaultMessages from "./messages"
+import { createJSONStorage } from "zustand/middleware"
+import { persist } from "zustand/middleware"
 
 export interface Message {
+    content: string,
+    createdDate: string,
+    modifiedDate: string,
+    senderUsername: string,
+    receiverUsername: string,
     messageId: string
-    senderId: string
-    receiverId: string
-    messageContent: string
-    createdAt: string
 }
 
 interface MessagingState {
-    userChats: Map<string, Message[]>,
-    currentChatReceiverId: string,
-    setCurrentChatReceiverId: (receiverId: string) => void,
-    addMessageToChat: (message: Message, receiverId: string) => void
-    removeMessage: (messageId: string, receiverId: string) => void
+    userChats: Record<string, Message[]>,
+    currentChatReceiverUsername: string,
+    getLastMessage: (username: string) => Message | null,
+    setUserChats: (userChats: Record<string, Message[]>) => void;
+    setCurrentChatReceiverUsername: (receiverUsername: string) => void,
+    addMessageToChat: (message: Message, receiverUsername: string) => void,
+    filterUserChats: (searchValue: string) => Record<string, Message[]>
 }
 
-export const useMessagingStore = create<MessagingState>((set) => ({
-    // "alice12345": defaultMessages as unknown as Message[]
-    userChats: new Map<string, Message[]>([
-        ["54717d52-32d8-4b34-a924-65e210e867e9", defaultMessages as Message[]]
-    ]),
-    currentChatReceiverId: "54717d52-32d8-4b34-a924-65e210e867e9",
-    setCurrentChatReceiverId: (receiverId: string) => set((state) => ({ currentChatReceiverId: receiverId })),
-    addMessageToChat: (message: Message, receiverId: string) => set((state) => (
-        { 
-            userChats: new Map(state.userChats.set(receiverId, [...(state.userChats.get(receiverId) || []), message])) 
-        })),
-    removeMessage: (messageId: string, receiverId: string) => set((state) => ({ 
-        userChats: new Map(state.userChats.set(receiverId, state.userChats.get(receiverId)?.filter((message: Message) => message.messageId !== messageId) || [])) })),
-}))
+const emptyMessage: Message = { content: "No messages yet", createdDate: "", modifiedDate: "", senderUsername: "", receiverUsername: "", messageId: "" }
+const emptyUserChats: Record<string, Message[]> = {}
+
+export const useMessagingStore = create<MessagingState>()(
+    persist(
+        (set, get) => ({
+            userChats: emptyUserChats,
+            currentChatReceiverUsername: "qwertyuiopas",
+            getLastMessage: (username: string) => get().userChats[username]?.at(-1) || emptyMessage,
+            setUserChats: (userChats: Record<string, Message[]>) => set({ userChats }), 
+            setCurrentChatReceiverUsername: (receiverUsername: string) => set({ currentChatReceiverUsername: receiverUsername }),
+            addMessageToChat: (message: Message, receiverUsername: string) => set((state) => ({ userChats: { ...state.userChats, [receiverUsername]: [...(state.userChats[receiverUsername] || []), message] } })),
+            filterUserChats: (searchValue: string) => Object.fromEntries(Object.entries(get().userChats).filter(([key, _]) => key.toLowerCase().includes(searchValue.toLowerCase()))) as Record<string, Message[]>,
+        }) as MessagingState,
+        {
+            name: "messaging-storage",
+            storage: createJSONStorage(() => localStorage),
+        }
+    )
+);
