@@ -21,9 +21,9 @@ public class MessageService {
     public Map<String, List<MessageResponseDto>> getGroupedUserChatsMessages(String userId) {
         UUID userUUID = UUID.fromString(userId);
 
-        List<String> messages = messageRepository.findConversationPartners(userUUID);
+        List<String> conversationPartnersUsernames = messageRepository.findConversationPartners(userUUID);
 
-        return messages.stream()
+        return conversationPartnersUsernames.stream()
                 .collect(Collectors.toMap(
                         partnerUsername -> partnerUsername,
                         partnerUsername -> messageRepository
