@@ -40,7 +40,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
                     throw new IllegalArgumentException("Missing Authorization header");
                 }
 
-                String token = authHeaders.get(0).replace("Bearer ", "");
+                String token = authHeaders.getFirst().replace("Bearer ", "");
                 log.info("WS CONNECT token: {}", token);
 
                 String username = jwtService.getUsernameFromToken(token);
