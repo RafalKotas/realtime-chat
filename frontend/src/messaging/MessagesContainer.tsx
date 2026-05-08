@@ -3,7 +3,7 @@ import { Item, ItemActions, ItemContent} from "@/components/ui/item"
 import { useEffect } from "react"
 import { useAuthStore } from "@/authentication/user-store"
 import { useMessagingStore } from "./messaging-store"
-import type { Message } from "./messaging-store"
+import { messageTimeCaption } from "./dateUtils"
 
 const MessagesContainer = () => {
 
@@ -57,10 +57,9 @@ const MessagesContainer = () => {
                                     </Button>
                                 </ItemActions>
                             </Item>
-
                         </div>
                         <p className={messageDateStyle(message) + " text-xs text-gray-500"}>
-                            {messageTimeCaption(message.createdAt)}
+                            {messageTimeCaption(message.createdDate)}
                         </p>
                     </div>
                 ))}
