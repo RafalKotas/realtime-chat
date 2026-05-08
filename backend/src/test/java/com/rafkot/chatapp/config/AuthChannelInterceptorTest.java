@@ -74,10 +74,13 @@ class AuthChannelInterceptorTest {
         Message<?> result = subject.preSend(message, mock(MessageChannel.class));
 
         // then
+        assertThat(result).isNotNull();
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(result, StompHeaderAccessor.class);
+        assertThat(accessor).isNotNull();
         assertThat(accessor.getUser()).isInstanceOf(Authentication.class);
 
         Authentication auth = (Authentication) accessor.getUser();
+        assertThat(auth).isNotNull();
         assertThat(auth.getPrincipal()).isEqualTo(userDetails);
 
         verify(jwtService).getUsernameFromToken(token);
