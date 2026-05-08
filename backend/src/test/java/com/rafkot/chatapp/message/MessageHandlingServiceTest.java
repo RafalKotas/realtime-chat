@@ -2,7 +2,6 @@ package com.rafkot.chatapp.message;
 
 import com.rafkot.chatapp.config.UserDetailsImpl;
 import com.rafkot.chatapp.user.User;
-import com.rafkot.chatapp.user.UserRepository;
 import com.rafkot.chatapp.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.security.Principal;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,9 +25,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MessageServiceTest {
+class MessageHandlingServiceTest {
 
-    MessageService subject;
+    MessageHandlingService subject;
 
     @MockitoSpyBean
     MessageRepository messageRepository;
@@ -38,28 +38,33 @@ class MessageServiceTest {
     UserService userService;
 
     @Mock
-    UserRepository userRepository;
+    MessageMapper messageMapper;
 
     @BeforeEach
     void setUp() {
         messageRepository = Mockito.mock(MessageRepository.class);
         messagingTemplate = Mockito.mock(SimpMessageSendingOperations.class);
-        subject = new MessageService(messageRepository, messagingTemplate, userService);
+        subject = new MessageHandlingService(messageRepository, messagingTemplate, userService, messageMapper);
     }
 
     @Test
     @WithUserDetails("test-username")
-    void shouldThrowExceptionWhenSenderIdIsEqualToRecipientId() {
+    void shouldThrowExceptionWhenSenderUsernameIsEqualToRecipientUsername() {
         // given
-        UUID recipientId = UUID.fromString("11111-2222-3333-4444-5555");
         UUID senderId = UUID.fromString("11111-2222-3333-4444-5555");
-        SendMessageRequest request = new SendMessageRequest(recipientId, "Hello World");
+        String senderUsername = "test-user";
+        String senderEmail = "test-user@mail.com";
+        String senderPassword = "test-user";
+        User senderUser = new User(senderUsername, senderEmail, senderPassword);
+        senderUser.setId(senderId);
+
+        SendMessageRequest request = new SendMessageRequest("test-user", "Hello World");
 
         UserDetailsImpl userDetails = new UserDetailsImpl(
                 senderId,
-                "password",
-                "username",
-                "email@mail.com",
+                "test-user",
+                "test-user",
+                "test-user@mail.com",
                 Set.of(),
                 true,
                 true,
@@ -76,21 +81,35 @@ class MessageServiceTest {
     @Test
     void shouldSendMessagesWhenUserAuthorizedAndRecipientIdOtherThanSenderId() {
         // given
+        String senderUsername = "username2";
+        String senderEmail = "username2@mail.com";
+        String senderPassword = "password2";
+        User senderUser = new User(senderUsername, senderEmail, senderPassword);
+        senderUser.setId(UUID.fromString("22222-3333-4444-5555-6666"));
+
         User recipientUser = new User("username", "username@mail.com", "password");
         recipientUser.setId(UUID.fromString("11111-2222-3333-4444-5555"));
-        UUID recipientId = recipientUser.getId();
+        String recipientUsername = recipientUser.getUsername();
 
-        User senderUser = new User("username2", "username2@mail.com", "password2");
-        senderUser.setId(UUID.fromString("22222-3333-4444-5555-6666"));
-        UUID senderId = senderUser.getId();
+        SendMessageRequest request = new SendMessageRequest(recipientUsername, "Hello World");
 
-        SendMessageRequest request = new SendMessageRequest(recipientId, "Hello World");
+        Instant now =  Instant.now();
+
+        Message testMessage = generateTestMessage(senderUser, recipientUser, now);
+
+        MessageResponseDto response = new MessageResponseDto(
+                "Hello World",
+                now,
+                now,
+                senderUsername,
+                recipientUsername,
+                UUID.randomUUID());
 
         UserDetailsImpl userDetails = new UserDetailsImpl(
                 senderUser.getId(),
-                "password",
-                "username",
-                "email@mail.com",
+                "password2",
+                senderUsername,
+                "username2@mail.com",
                 Set.of(),
                 true,
                 true,
@@ -99,14 +118,28 @@ class MessageServiceTest {
         );
         Principal principal = new UsernamePasswordAuthenticationToken(userDetails, null, Set.of());
 
-        when(userService.getUserById(recipientId)).thenReturn(recipientUser);
-        when(userService.getUserById(senderId)).thenReturn(senderUser);
-        when(messageRepository.save(any(Message.class))).thenReturn(new Message());
+        when(userService.getUserByUsername(recipientUsername)).thenReturn(recipientUser);
+        when(userService.getUserByUsername(senderUsername)).thenReturn(senderUser);
+        when(messageRepository.save(any(Message.class))).thenReturn(testMessage);
+        when(messageMapper.mapMessageToDto(testMessage)).thenReturn(response);
 
         // when
         subject.sendMessage(request, principal);
 
         // when + then
         verify(messageRepository).save(any());
+    }
+
+    private Message generateTestMessage(User senderUser, User recipientUser, Instant now) {
+        Message testMessage = new Message();
+        testMessage.setSender(senderUser);
+        testMessage.setRecipient(recipientUser);
+        testMessage.setContent("Hello World");
+        testMessage.setId(UUID.randomUUID());
+
+        testMessage.setModifiedDate(now);
+        testMessage.setCreatedDate(now);
+
+        return testMessage;
     }
 }

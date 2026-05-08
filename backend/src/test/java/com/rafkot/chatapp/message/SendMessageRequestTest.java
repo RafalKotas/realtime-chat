@@ -2,8 +2,6 @@ package com.rafkot.chatapp.message;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SendMessageRequestTest {
@@ -13,17 +11,17 @@ class SendMessageRequestTest {
     @Test
     void shouldInstantiateAndRetrieveValues() {
         // given
-        UUID recipientId = UUID.randomUUID();
+        String recipientName = "test-recipient";
         String content = "Hello World!";
 
         // when
         subject = new SendMessageRequest(
-                recipientId, content
+                recipientName, content
         );
 
         // then
         assertThat(subject).isNotNull();
-        assertThat(subject.recipientId()).isEqualTo(recipientId);
+        assertThat(subject.recipientUsername()).isEqualTo("test-recipient");
         assertThat(subject.content()).isEqualTo("Hello World!");
     }
 }

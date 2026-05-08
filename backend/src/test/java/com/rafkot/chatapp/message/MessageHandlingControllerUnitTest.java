@@ -7,30 +7,29 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.security.Principal;
-import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class MessageControllerTest {
+class MessageHandlingControllerUnitTest {
 
     @Mock
-    private MessageService messageService;
+    private MessageHandlingService messageHandlingService;
 
-    private MessageController controller;
+    private MessageHandlingController controller;
 
     @BeforeEach
     void setUp() {
-        controller = new MessageController(messageService);
+        controller = new MessageHandlingController(messageHandlingService);
     }
 
     @Test
     void shouldDelegateToMessageService() {
         // given
         SendMessageRequest request = new SendMessageRequest(
-                UUID.randomUUID(),
+                "test-username",
                 "hello"
         );
 
@@ -40,21 +39,21 @@ class MessageControllerTest {
         controller.send(request, principal);
 
         // then
-        verify(messageService).sendMessage(request, principal);
+        verify(messageHandlingService).sendMessage(request, principal);
     }
 
     @Test
     void shouldPropagateExceptionFromMessageService() {
         // given
         SendMessageRequest request = new SendMessageRequest(
-                UUID.randomUUID(),
+                "test-username",
                 "hello"
         );
 
         Principal principal = () -> "testPrincipal";
 
         doThrow(new IllegalArgumentException("boom"))
-                .when(messageService)
+                .when(messageHandlingService)
                 .sendMessage(request, principal);
 
         // when + then
