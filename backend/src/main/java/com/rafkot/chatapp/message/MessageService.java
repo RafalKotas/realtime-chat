@@ -1,62 +1,37 @@
 package com.rafkot.chatapp.message;
 
-import com.rafkot.chatapp.config.UserDetailsImpl;
-import com.rafkot.chatapp.user.User;
-import com.rafkot.chatapp.user.UserService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
 @Slf4j
+@Service
 public class MessageService {
 
-    private final MessageRepository messageRepository;
-    private final SimpMessageSendingOperations messagingTemplate;
-    private final UserService userService;
+    MessageRepository messageRepository;
+    MessageMapper messageMapper;
 
-    public void sendMessage(SendMessageRequest request, Principal principal) {
-        UserDetailsImpl userDetails =
-                (UserDetailsImpl) ((Authentication) principal).getPrincipal();
-
-        UUID senderId = userDetails.getId();
-
-        // TODO - implement custom exception
-        if (senderId.equals(request.recipientId())) {
-            throw new IllegalArgumentException("Cannot send message to yourself");
-        }
-
-        User senderUser = userService.getUserById(senderId);
-        User recipient = userService.getUserById(request.recipientId());
-
-
-        Message message = new Message();
-        message.setSender(senderUser);
-        message.setContent(request.content());
-        message.setRecipient(recipient);
-
-        Message saved = save(message);
-
-        messagingTemplate.convertAndSendToUser(
-                message.getRecipient().getId().toString(),
-                "/queue/messages",
-                saved
-        );
-
-        messagingTemplate.convertAndSendToUser(
-                senderId.toString(),
-                "/queue/messages",
-                saved
-        );
+    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper) {
+        this.messageRepository = messageRepository;
+        this.messageMapper = messageMapper;
     }
 
-    private Message save(Message message) {
-        return messageRepository.save(message);
+    public Map<String, List<MessageResponseDto>> getGroupedUserChatsMessages(String userId) {
+        UUID userUUID = UUID.fromString(userId);
+
+        List<String> messages = messageRepository.findConversationPartners(userUUID);
+
+        return messages.stream()
+                .collect(Collectors.toMap(
+                        partnerUsername -> partnerUsername,
+                        partnerUsername -> messageRepository
+                                .findConversationMessages(userUUID, partnerUsername)
+                                .stream()
+                                .map(messageMapper::mapMessageToDto)
+                                .sorted(Comparator.comparing(MessageResponseDto::createdDate))
+                                .toList()
+                ));
     }
 }
