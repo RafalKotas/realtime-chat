@@ -30,7 +30,8 @@
 		<java.version>21</java.version>
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
 		<sonar.exclusions>
-			**/ChatappApplication.java
+			**/ChatappApplication.java,
+			src/main/java/**/initializers/**
 		</sonar.exclusions>
 	</properties>
 	<dependencies>
