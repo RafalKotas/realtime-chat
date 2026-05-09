@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Sidebar, 
     SidebarHeader, 
     SidebarContent,
@@ -80,9 +80,6 @@ const ContactsSidebar = () => {
         </SidebarContent>
       </TooltipProvider>
       <SidebarFooter className="flex flex-row h-10 items-center rounded-md">
-        <SidebarMenuButton>
-          Button
-        </SidebarMenuButton>
       </SidebarFooter>
     </Sidebar>
   )
