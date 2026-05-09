@@ -6,7 +6,6 @@ import ContactsSidebar from "@/usercontent/ContactsSidebar"
 import LoggedUserHeader from "@/usercontent/LoggedUserHeader"
 import MessagesContainer from "@/messaging/MessagesContainer"
 import MessagesInput from "@/messaging/MessagesInput"
-import { StompSessionProvider } from "react-stomp-hooks"
 import request from "@/authentication/authClient";
 import { useAuthStore } from "@/authentication/user-store";
 import type { Message } from "@/messaging/messaging-store";
@@ -14,7 +13,6 @@ import { useMessagingStore } from "@/messaging/messaging-store";
 
 const LoggedUserPanel = () => {
 
-    const wsUrl = import.meta.env.VITE_WS_BASE_URL;
     const accessToken = localStorage.getItem("accessToken");
     const { loggedUserId } = useAuthStore();
     const { setUserChats } = useMessagingStore();
