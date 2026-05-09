@@ -28,7 +28,7 @@ export const useMessagingStore = create<MessagingState>()(
     persist(
         (set, get) => ({
             userChats: emptyUserChats,
-            currentChatReceiverUsername: "qwertyuiopas",
+            currentChatReceiverUsername: null as string | null,
             getLastMessage: (username: string) => get().userChats[username]?.at(-1) || emptyMessage,
             setUserChats: (userChats: Record<string, Message[]>) => set({ userChats }), 
             setCurrentChatReceiverUsername: (receiverUsername: string) => set({ currentChatReceiverUsername: receiverUsername }),

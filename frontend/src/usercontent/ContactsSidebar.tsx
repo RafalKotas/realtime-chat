@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Sidebar, 
     SidebarHeader, 
     SidebarContent,
@@ -16,11 +16,15 @@ import type { Message } from '@/messaging/messaging-store'
 const ContactsSidebar = () => {
 
   const {currentChatReceiverUsername, userChats, setCurrentChatReceiverUsername, getLastMessage, filterUserChats} = useMessagingStore()
-  const [filteredUserChats, setFilteredUserChats] = useState<Record<string, Message[]>>(userChats)
+  
+  const [searchValue, setSearchValue] = useState<string>("")
+  
+  const filteredUserChats = searchValue
+  ? filterUserChats(searchValue)
+  : userChats
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const searchValue = event.target.value
-    setFilteredUserChats(filterUserChats(searchValue))
+    setSearchValue(event.target.value)
   }
 
   const imageFallback = (name: string) => {
