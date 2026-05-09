@@ -51,7 +51,7 @@ public class AuthenticationService {
             final String accessToken = jwtService.generateToken(authentication);
             final RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
-            return new LoginResponseDto(user.getUsername(), accessToken, refreshToken.getToken());
+            return new LoginResponseDto(user.getUsername(), user.getId().toString(), accessToken, refreshToken.getToken());
         } catch (AuthenticationException e) {
             throw new UserValidationException(
                     HttpStatus.UNAUTHORIZED,

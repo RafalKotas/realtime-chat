@@ -30,7 +30,8 @@
 		<java.version>21</java.version>
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
 		<sonar.exclusions>
-			**/ChatappApplication.java
+			**/ChatappApplication.java,
+			src/main/java/**/initializers/**
 		</sonar.exclusions>
 	</properties>
 	<dependencies>
@@ -79,6 +80,14 @@
 			<artifactId>spring-boot-starter-flyway</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-mysql</artifactId>
 		</dependency>
@@ -86,6 +95,10 @@
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
 
 		<dependency>

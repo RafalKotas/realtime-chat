@@ -4,7 +4,7 @@ import { type AxiosRequestConfig, type AxiosResponse, type AxiosInstance, type A
 
 export const client: AxiosInstance = (() => {
     return axios.create({
-      baseURL: import.meta.env.VITE_BASE_URL as string,
+      baseURL: import.meta.env.VITE_API_BASE_URL,
       headers: {
         Accept: "application/json, text/plain, */*",
       },

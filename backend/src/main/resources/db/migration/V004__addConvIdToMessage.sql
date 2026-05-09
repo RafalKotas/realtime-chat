@@ -1,0 +1,1 @@
+ALTER TABLE messages ADD conv_id CHAR(36);

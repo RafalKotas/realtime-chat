@@ -6,12 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@ActiveProfiles("test")
 class JwtConfigTest {
 
     private JwtConfig subject;
@@ -49,9 +51,10 @@ class JwtConfigTest {
     void shouldCreateJwtService() {
         // given
         JwtEncoder encoder = subject.jwtEncoder();
+        JwtDecoder decoder = subject.jwtDecoder();
 
         // when
-        JwtService service = subject.jwtService("test-app", encoder);
+        JwtService service = subject.jwtService("test-app", encoder, decoder);
 
         // then
         assertThat(service).isNotNull();

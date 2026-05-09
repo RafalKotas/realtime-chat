@@ -1,0 +1,102 @@
+[
+  {
+    "content": "We should decide soon.",
+    "createdDate": "2026-01-21T15:00:00",
+    "id": 2
+  },
+  {
+    "content": "I found a really nice hotel.",
+    "createdDate": "2026-01-25T03:00:00",
+    "id": 1
+  },
+  {
+    "content": "Do we need to rent a car?",
+    "createdDate": "2026-01-27T07:00:00",
+    "id": 2
+  },
+  {
+    "content": "Send me the link later.",
+    "createdDate": "2026-01-27T07:18:00",
+    "id": 2
+  },
+  {
+    "content": "Probably, it’ll make things easier.",
+    "createdDate": "2026-01-27T07:27:00",
+    "id": 2
+  },
+  {
+    "content": "That actually works for me.",
+    "createdDate": "2026-01-29T18:27:00",
+    "id": 2
+  },
+  {
+    "content": "That actually works for me.",
+    "createdDate": "2026-01-30T01:01:00",
+    "id": 1
+  },
+  {
+    "content": "Have you booked the tickets yet?",
+    "createdDate": "2026-01-30T01:28:00",
+    "id": 2
+  },
+  {
+    "content": "I’m really looking forward to this trip.",
+    "createdDate": "2026-01-31T13:28:00",
+    "id": 1
+  },
+  {
+    "content": "Do we need to rent a car?",
+    "createdDate": "2026-01-31T13:51:00",
+    "id": 1
+  },
+  {
+    "content": "That actually works for me.",
+    "createdDate": "2026-01-31T23:38:00",
+    "id": 2
+  },
+  {
+    "content": "I’m really looking forward to this trip.",
+    "createdDate": "2026-02-01T00:10:00",
+    "id": 2
+  },
+  {
+    "content": "That actually works for me.",
+    "createdDate": "2026-02-01T01:34:00",
+    "id": 2
+  },
+  {
+    "content": "That actually works for me.",
+    "createdDate": "2026-02-03T08:34:00",
+    "id": 1
+  },
+  {
+    "content": "I’m really looking forward to this trip.",
+    "createdDate": "2026-02-04T14:34:00",
+    "id": 2
+  },
+  {
+    "content": "Have you booked the tickets yet?",
+    "createdDate": "2026-02-04T15:16:00",
+    "id": 1
+  },
+  {
+    "content": "Do we need to rent a car?",
+    "createdDate": "2026-02-04T15:20:00",
+    "id": 1
+  },
+  {
+    "content": "The flights look cheaper on Tuesday.",
+    "createdDate": "2026-02-04T15:50:00",
+    "id": 1
+  },
+  {
+    "content": "That actually works for me.",
+    "createdDate": "2026-02-04T23:06:00",
+    "id": 2
+  },
+  {
+    "content": "Do we need to rent a car?",
+    "createdDate": "2026-02-04T23:41:00",
+    "id": 2
+  }
+]

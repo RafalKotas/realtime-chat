@@ -19,7 +19,7 @@ import { Spinner } from "@/components/ui/spinner";
 
 const Login = () => {
 
-  const { setTokens, setUser } = useAuthStore()
+  const { setTokens, setLoggedUsername, setLoggedUserId } = useAuthStore()
 
   const navigate = useNavigate()
 
@@ -55,13 +55,13 @@ const Login = () => {
     })
     .then((response: any) => {
       setLoginSuccess(true)
-      const { accessToken, refreshToken, username } = response;
+      const { accessToken, refreshToken, username, userId } = response;
       setTokens(accessToken, refreshToken);
-      setUser({ username });
+      setLoggedUsername(username);
+      setLoggedUserId(userId);
       navigate("/user-panel")
     })
     .catch((error: any) => {
-      console.log(error);
       const errorsMap = error.response.data as LoginErrors
       const errorsArray = Object.entries(errorsMap).map(([_, message]) =>  message ).flat()
       setErrors(errorsArray)

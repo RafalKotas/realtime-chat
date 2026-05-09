@@ -2,9 +2,8 @@ package com.rafkot.chatapp.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +17,5 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
 
     boolean existsByEmail(String email);
 
-    @Query("SELECT u.username FROM User u WHERE u.email = :email")
-    String findUsernameByEmail(@Param("email") String email);
+    List<User> findAllByUsernameIn(List<String> usernames);
 }

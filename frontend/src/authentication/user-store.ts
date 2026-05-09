@@ -1,24 +1,36 @@
 import { create } from "zustand"
+import { createJSONStorage, persist } from "zustand/middleware"
+
 
 interface AuthState {
+    loggedUsername: string | null
+    loggedUserId: string | null
     accessToken: string | null
     refreshToken: string | null
+    setLoggedUserId: (loggedUserId: string) => void
+    removeLoggedUserId: () => void
+    setLoggedUsername: (loggedUsername: string) => void
+    removeLoggedUsername: () => void
     setTokens: (accessToken: string, refreshToken: string) => void
     removeTokens: () => void
-    user: { username: string } | null
-    setUser: (user: { username: string }) => void
-    removeUser: () => void
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-    user: null,
+export const useAuthStore = create<AuthState>()(persist((set) => ({
+    loggedUsername: null,
+    loggedUserId: null,
     accessToken: localStorage.getItem("accessToken") || null,
     refreshToken: localStorage.getItem("refreshToken") || null,
-    setUser: (user: { username: string }) => {
-        set({ user });
+    setLoggedUserId: (loggedUserId: string) => {
+        set({ loggedUserId });
     },
-    removeUser: () => {
-        set({ user: null });
+    removeLoggedUserId: () => {
+        set({ loggedUserId: null });
+    },
+    setLoggedUsername: (loggedUsername: string) => {
+        set({ loggedUsername });
+    },
+    removeLoggedUsername: () => {
+        set({ loggedUsername: null });
     },
     setTokens: (accessToken: string, refreshToken: string) => {
         if (accessToken) localStorage.setItem("accessToken", accessToken);
@@ -30,4 +42,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         localStorage.removeItem("refreshToken");
         set({ accessToken: null, refreshToken: null });
     }
+}), {
+    name: "auth-storage",
+    storage: createJSONStorage(() => localStorage)
 }));

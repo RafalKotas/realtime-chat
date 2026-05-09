@@ -62,7 +62,6 @@ const Signup = () => {
       },
     })
     .then((response: any) => {
-      console.log(response);
       setRegisterSuccess(true)
       clearForm()
     })
@@ -110,10 +109,6 @@ const Signup = () => {
       setPassword("")
     }
   }
-
-  useEffect(() => {
-    console.log(errors);
-  }, [errors])
 
   return (
     <div className="flex justify-center items-center h-screen">

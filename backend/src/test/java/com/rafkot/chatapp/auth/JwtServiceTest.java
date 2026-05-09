@@ -2,12 +2,13 @@ package com.rafkot.chatapp.auth;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -17,11 +18,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 class JwtServiceTest {
 
     private JwtService subject;
 
     private JwtEncoder jwtEncoder;
+
+    @Mock
+    private JwtDecoder jwtDecoder;
 
     @BeforeEach
     void setUp() {
@@ -29,7 +35,8 @@ class JwtServiceTest {
         subject = new JwtService(
                 "test-issuer",
                 Duration.ofMinutes(15),
-                jwtEncoder
+                jwtEncoder,
+                jwtDecoder
         );
     }
 
@@ -97,5 +104,32 @@ class JwtServiceTest {
 
         // then
         assertThat(token).isEqualTo(expectedToken);
+    }
+
+    @Test
+    void shouldExtractUsernameFromToken() {
+        // given
+        String token = "mocked-jwt-token";
+        String expectedUsername = "alice12345";
+
+        Map<String, Object> headers = Map.of("alg", "HS256");
+        Map<String, Object> claims = Map.of("sub", expectedUsername);
+
+        Jwt jwt = new Jwt(
+                token,
+                Instant.now(),
+                Instant.now().plusSeconds(3600),
+                headers,
+                claims
+        );
+
+        when(jwtDecoder.decode(token)).thenReturn(jwt);
+
+        // when
+        String result = subject.getUsernameFromToken(token);
+
+        // then
+        assertThat(result).isEqualTo("alice12345");
+        verify(jwtDecoder).decode(token);
     }
 }
