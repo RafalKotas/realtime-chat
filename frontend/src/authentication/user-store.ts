@@ -3,16 +3,16 @@ import { createJSONStorage, persist } from "zustand/middleware"
 
 
 interface AuthState {
+    loggedUsername: string | null
+    loggedUserId: string | null
     accessToken: string | null
     refreshToken: string | null
-    setTokens: (accessToken: string, refreshToken: string) => void
-    removeTokens: () => void
-    loggedUsername: string | null
-    setLoggedUsername: (loggedUsername: string) => void
-    removeLoggedUsername: () => void
-    loggedUserId: string | null
     setLoggedUserId: (loggedUserId: string) => void
     removeLoggedUserId: () => void
+    setLoggedUsername: (loggedUsername: string) => void
+    removeLoggedUsername: () => void
+    setTokens: (accessToken: string, refreshToken: string) => void
+    removeTokens: () => void
 }
 
 export const useAuthStore = create<AuthState>()(persist((set) => ({
