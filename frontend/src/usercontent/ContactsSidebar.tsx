@@ -4,8 +4,7 @@ import { Sidebar,
     SidebarContent,
     SidebarFooter, 
     SidebarMenu, 
-    SidebarMenuItem, 
-    SidebarMenuButton 
+    SidebarMenuItem
 } from '@/components/ui/sidebar'
 import { Input } from '@/components/ui/input'
 import { IconSearch } from '@tabler/icons-react'
