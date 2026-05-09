@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-@Profile("!test")
+@Profile("dev")
 @Slf4j
 @Component
 @Order(1)

@@ -3,12 +3,14 @@ package com.rafkot.chatapp.message;
 import com.rafkot.chatapp.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 class MessageMapperTest {
 
     MessageMapper subject;

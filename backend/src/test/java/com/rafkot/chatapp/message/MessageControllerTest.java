@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.when;
 @Import({SecurityConfig.class, JwtConfig.class})
 @AutoConfigureMockMvc
 @WebMvcTest(MessageController.class)
+@ActiveProfiles("test")
 class MessageControllerTest {
 
     @Autowired

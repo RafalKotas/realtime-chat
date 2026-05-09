@@ -2,6 +2,7 @@ package com.rafkot.chatapp.config;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 class UserDetailsImplTest {
 
     private UserDetailsImpl subject;
@@ -89,7 +91,7 @@ class UserDetailsImplTest {
         UserDetailsImpl userDetailsImpl;
         userDetailsImpl = new UserDetailsImpl(
                 subject.getId(),
-                "strongpass",
+                "strongPass",
                 "test-uname",
                 "email@email.com",
                 new HashSet<>(),

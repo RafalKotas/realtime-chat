@@ -1,9 +1,11 @@
 package com.rafkot.chatapp.message;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 class SendMessageRequestTest {
 
     private SendMessageRequest subject;

@@ -1,10 +1,12 @@
 package com.rafkot.chatapp.auth.dto;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@ActiveProfiles("test")
 class AuthenticationRequestDtoTest {
 
     @Test

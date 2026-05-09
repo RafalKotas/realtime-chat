@@ -1,11 +1,13 @@
 package com.rafkot.chatapp.user.dto;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 class UserProfileDtoTest {
 
     @Test
