@@ -29,7 +29,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOrigins(frontendCallerHost, "chrome-extension://lhbjghocjpcoecemiikamjijoonopgll/index.html")
+                .setAllowedOrigins(frontendCallerHost)
                 .withSockJS();
 
         registry.addEndpoint("/ws-raw")
