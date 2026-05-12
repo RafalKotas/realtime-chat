@@ -3,9 +3,10 @@ package com.rafkot.chatapp.user.dto;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.UUID;
+import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ActiveProfiles("test")
 class UserProfileDtoTest {
@@ -13,21 +14,23 @@ class UserProfileDtoTest {
     @Test
     void shouldInstantiateAndRetrieveValues() {
         // given
-        UUID id = UUID.randomUUID();
         String username = "exampleUsername";
         String email = "exampleUserEmail@mail.com";
+        String joinedAtAndCreatedAt = Instant.now().toString();
 
         // when
         UserProfileDto userProfileDto = new UserProfileDto(
-                id,
                 username,
-                email
+                email,
+                joinedAtAndCreatedAt,
+                joinedAtAndCreatedAt
         );
 
         // then
         assertNotNull(userProfileDto);
-        assertEquals(id, userProfileDto.id());
-        assertEquals("exampleUsername", userProfileDto.username());
-        assertEquals("exampleUserEmail@mail.com", userProfileDto.email());
+        assertThat(userProfileDto.username()).isEqualTo("exampleUsername");
+        assertThat(userProfileDto.email()).isEqualTo("exampleUserEmail@mail.com");
+        assertThat(userProfileDto.joinedAt()).isEqualTo(joinedAtAndCreatedAt);
+        assertThat(userProfileDto.lastEditedAt()).isEqualTo(joinedAtAndCreatedAt);
     }
 }

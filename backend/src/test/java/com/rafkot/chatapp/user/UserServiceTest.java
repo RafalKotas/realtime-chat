@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,10 +25,13 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        subject = new UserService(userRepository);
+        subject = new UserService(userRepository, passwordEncoder);
     }
 
     @Test
@@ -76,5 +81,33 @@ class UserServiceTest {
         assertThat(result)
                 .isNotNull()
                 .isEqualTo(user);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPasswordsNotMatch() {
+        // given
+        String password = "abcdef";
+        String confirmPassword = "abxdef";
+
+        // when & then
+        assertThatThrownBy(() -> subject.changePassword("testUser", password, confirmPassword))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Password do not match");
+    }
+
+    @Test
+    void shouldChangePasswordWhenPasswordMatch() {
+        // given
+        String password = "abcdef";
+        String confirmPassword = "abcdef";
+        when(userRepository.findByUsername("testUser")).thenReturn(Optional.of(new User()));
+
+        // when
+        subject.changePassword("testUser", password, confirmPassword);
+
+        // then
+        verify(userRepository).findByUsername("testUser");
+        verify(passwordEncoder).encode(password);
+        verify(userRepository).save(any());
     }
 }
