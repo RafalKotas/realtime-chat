@@ -4,14 +4,20 @@ import { IconLogout } from '@tabler/icons-react'
 import { useAuthStore } from '@/authentication/user-store'
 import { useNavigate } from 'react-router-dom'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useCookies } from 'react-cookie'
+import { IconMail } from '@tabler/icons-react'
 
 const LoggedUserHeader = () => {
   const navigate = useNavigate()
 
-  const { removeTokens, loggedUsername } = useAuthStore()
+  const { removeAccessToken, loggedUsername } = useAuthStore()
+
+  const [, , removeCookie] = useCookies(['refreshToken'])
 
   const handleLogout = () => {
-    removeTokens()
+    removeAccessToken()
+    removeCookie('refreshToken')
     navigate('/login')
   }
 

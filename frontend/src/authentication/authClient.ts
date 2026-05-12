@@ -70,7 +70,7 @@ client.interceptors.response.use((response: AxiosResponse) => response, async (e
     })
 
     const newAccessToken = response.data.accessToken
-    useAuthStore.getState().setTokens(newAccessToken)
+    useAuthStore.getState().setAccessToken(newAccessToken)
 
     isRefreshing = false
     onRefreshed(newAccessToken)
