@@ -1,5 +1,8 @@
 package com.rafkot.chatapp.config;
 
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.rafkot.chatapp.auth.JwtService;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.security.oauth2.jwt.*;
 
 import java.io.InputStream;
 import java.security.KeyFactory;
@@ -16,15 +21,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.Duration;
 import java.util.Base64;
-
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import org.springframework.core.io.Resource;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
 @Configuration
 @Setter
@@ -51,7 +47,11 @@ public class JwtConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(getPublicKey()).build();
+        NimbusJwtDecoder decoder = NimbusJwtDecoder.withPublicKey(getPublicKey()).build();
+
+        decoder.setJwtValidator(token -> JwtValidators.createDefault().validate(token));
+
+        return decoder;
     }
 
     @Bean

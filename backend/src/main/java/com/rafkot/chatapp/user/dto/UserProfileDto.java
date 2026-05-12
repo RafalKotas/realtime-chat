@@ -1,6 +1,4 @@
 package com.rafkot.chatapp.user.dto;
 
-import java.util.UUID;
-
-public record UserProfileDto(UUID id, String username, String email) {
+public record UserProfileDto(String username, String email, String joinedAt, String lastEditedAt) {
 }

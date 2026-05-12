@@ -6,6 +6,8 @@ import LoggedUserPanel from "@/usercontent/LoggedUserPanel"
 import GlobalStompSubscription from "@/GlobalStompSubscription"
 import { StompSessionProvider } from "react-stomp-hooks"
 import { useAuthStore } from "@/authentication/user-store"
+import ProfilePage from "@/usercontent/ProfilePage"
+import { CookiesProvider } from "react-cookie"
 
 const App = () => {
 
@@ -14,7 +16,7 @@ const App = () => {
 
   return (
 
-      
+    <CookiesProvider>
       <Routes>
         <Route path="/" element={<Login />} /> {/* Home page */}
         <Route path="/login" element={<Login />} /> {/* Login page */}
@@ -36,7 +38,9 @@ const App = () => {
             ) : <Navigate to="/login" />
           }
         />
+        <Route path="/profile" element={<ProfilePage />} /> {/* Profile page */}
       </Routes>
+    </CookiesProvider>
   )
 }
 

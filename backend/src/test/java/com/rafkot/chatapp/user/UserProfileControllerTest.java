@@ -9,16 +9,18 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -35,40 +37,93 @@ class UserProfileControllerTest {
     @MockitoBean
     private UserMapper userMapper;
 
+    @MockitoBean
+    private PasswordEncoder passwordEncoder;
+
+    @MockitoBean
+    private JwtDecoder jwtDecoder;
+
+    @MockitoBean
+    private UserRepository userRepository;
+
     @Test
-    @WithMockUser(username = "testuser")
     void shouldReturnUserProfile() {
         // given
+        Jwt jwt = Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .claim("sub", "testUser")
+                .build();
+
+        JwtAuthenticationToken auth = new JwtAuthenticationToken(jwt);
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         User user = new User();
-        user.setUsername("testuser");
-        user.setEmail("testuser@mail.com");
-        UUID userId = UUID.fromString("11111111-2222-3333-4444-555555555555");
+        user.setUsername("testUser");
+        user.setEmail("testUser@mail.com");
 
         UserProfileDto dto = new UserProfileDto(
-                userId,
-                "testuser",
-                "testuser@mail.com"
+                "testUser",
+                "testUser@mail.com",
+                "2024-01-01T00:00:00Z",
+                "2024-01-01T00:00:00Z"
         );
 
-        when(userService.getUserByUsername("testuser")).thenReturn(user);
+        when(userService.getUserByUsername("testUser")).thenReturn(user);
         when(userMapper.toUserProfileDto(user)).thenReturn(dto);
 
         // when + then
         assertThat(mockMvcTester.get()
                 .uri("/api/user/me")
+                .header("Authorization", "Bearer token")
                 .accept(MediaType.APPLICATION_JSON))
                 .hasStatusOk()
                 .bodyJson()
                 .isLenientlyEqualTo("""
-                    {
-                      "id": "11111111-2222-3333-4444-555555555555",
-                      "email": "testuser@mail.com",
-                      "username": "testuser"
-                    }
-                """);
+                {
+                  "username": "testUser",
+                  "email": "testUser@mail.com"
+                }
+            """);
+    }
 
-        verify(userService).getUserByUsername("testuser");
-        verify(userMapper).toUserProfileDto(user);
+    @Test
+    void shouldReturn401WhenJwtIsNullUserMe() {
+        // given + when + then
+        assertThat(mockMvcTester.get()
+                .uri("/api/user/me")
+                .accept(MediaType.APPLICATION_JSON))
+                .hasStatus(HttpStatus.UNAUTHORIZED)
+                .bodyJson()
+                .isLenientlyEqualTo("""
+                {
+                  "authentication": "username is null"
+                }
+            """);
+    }
+
+    @Test
+    void shouldReturn401WhenJwtHasNoSubClaimUserMe() {
+        // given
+        Jwt jwt = Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .claim("testClaim", "testValue")
+                .build();
+
+        JwtAuthenticationToken auth = new JwtAuthenticationToken(jwt);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        // when + then
+        assertThat(mockMvcTester.get()
+                .uri("/api/user/me")
+                .accept(MediaType.APPLICATION_JSON))
+                .hasStatus(HttpStatus.UNAUTHORIZED)
+                .bodyJson()
+                .isLenientlyEqualTo("""
+                {
+                  "authentication": "username is null"
+                }
+            """);
     }
 
     @Test
@@ -96,4 +151,123 @@ class UserProfileControllerTest {
         assertThatThrownBy(() -> controller.getUserProfile(null))
                 .isInstanceOf(UserValidationException.class);
     }
+
+    @Test
+    void shouldReturn401WhenJwtIsNullChangePassword() {
+        // given + when + then
+        assertThat(mockMvcTester.post()
+                .uri("/api/user/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                        "password": "pass",
+                        "confirmPassword": "pass"
+                    }
+                """)
+                .accept(MediaType.APPLICATION_JSON))
+                .hasStatus(HttpStatus.UNAUTHORIZED)
+                .bodyJson()
+                .isLenientlyEqualTo("""
+                    {
+                        "authentication": "username is null"
+                    }
+                """);
+    }
+
+    @Test
+    void shouldReturn401WhenJwtHasNoSubClaimChangePassword() {
+        Jwt jwt = Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .claim("testClaim", "testValue")
+                .build();
+
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwt));
+
+        assertThat(mockMvcTester.post()
+                .uri("/api/user/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                        "password": "pass",
+                        "confirmPassword": "pass"
+                    }
+                """)
+                .accept(MediaType.APPLICATION_JSON))
+                .hasStatus(HttpStatus.UNAUTHORIZED)
+                .bodyJson()
+                .isLenientlyEqualTo("""
+                    {
+                        "authentication": "username is null"
+                    }
+                """);
+    }
+
+    @Test
+    void shouldReturn400WhenPasswordsDoNotMatch() {
+        // given
+        Jwt jwt = Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .claim("sub", "testUser")
+                .build();
+
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwt));
+        doThrow(new IllegalArgumentException("Password do not match"))
+                .when(userService)
+                .changePassword("testUser", "abc", "xyz");
+
+        // when + then
+        assertThat(mockMvcTester.post()
+                .uri("/api/user/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                        "password": "abc",
+                        "confirmPassword": "xyz"
+                    }
+                """)
+                .accept(MediaType.APPLICATION_JSON))
+                .hasStatus(HttpStatus.BAD_REQUEST)
+                .bodyJson()
+                .isLenientlyEqualTo("""
+                    {
+                        "error": "Password do not match"
+                    }
+                """);
+    }
+
+    @Test
+    void shouldChangePasswordSuccessfully() {
+        // given
+        Jwt jwt = Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .claim("sub", "testUser")
+                .build();
+
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwt));
+
+        User user = new User();
+        user.setUsername("testUser");
+
+        when(userService.getUserByUsername("testUser")).thenReturn(user);
+        when(passwordEncoder.encode("newPass")).thenReturn("encodedPass");
+
+        // when & then
+        assertThat(mockMvcTester.post()
+                .uri("/api/user/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                        "password":"newPass","confirmPassword":"newPass"
+                    }
+                """)
+                .accept(MediaType.APPLICATION_JSON))
+                .hasStatusOk()
+                .bodyJson()
+                .isLenientlyEqualTo("""
+                    {
+                        "message": "Password changed correctly."
+                    }
+                """);
+    }
+
 }

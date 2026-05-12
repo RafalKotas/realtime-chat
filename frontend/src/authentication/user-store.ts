@@ -6,20 +6,18 @@ interface AuthState {
     loggedUsername: string | null
     loggedUserId: string | null
     accessToken: string | null
-    refreshToken: string | null
     setLoggedUserId: (loggedUserId: string) => void
     removeLoggedUserId: () => void
     setLoggedUsername: (loggedUsername: string) => void
     removeLoggedUsername: () => void
-    setTokens: (accessToken: string, refreshToken: string) => void
-    removeTokens: () => void
+    setAccessToken: (accessToken: string) => void
+    removeAccessToken: () => void
 }
 
 export const useAuthStore = create<AuthState>()(persist((set) => ({
     loggedUsername: null,
     loggedUserId: null,
     accessToken: localStorage.getItem("accessToken") || null,
-    refreshToken: localStorage.getItem("refreshToken") || null,
     setLoggedUserId: (loggedUserId: string) => {
         set({ loggedUserId });
     },
@@ -32,15 +30,13 @@ export const useAuthStore = create<AuthState>()(persist((set) => ({
     removeLoggedUsername: () => {
         set({ loggedUsername: null });
     },
-    setTokens: (accessToken: string, refreshToken: string) => {
+    setAccessToken: (accessToken: string) => {
         if (accessToken) localStorage.setItem("accessToken", accessToken);
-        if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
-        set({ accessToken, refreshToken });
+        set({ accessToken });
     },
-    removeTokens: () => {
+    removeAccessToken: () => {
         localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        set({ accessToken: null, refreshToken: null });
+        set({ accessToken: null });
     }
 }), {
     name: "auth-storage",

@@ -16,10 +16,12 @@ import { Alert } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "./user-store";
 import { Spinner } from "@/components/ui/spinner";
+import { useCookies } from "react-cookie";
 
 const Login = () => {
 
-  const { setTokens, setLoggedUsername, setLoggedUserId } = useAuthStore()
+  const { setAccessToken, setLoggedUsername, setLoggedUserId } = useAuthStore()
+  const [, setCookie] = useCookies(['refreshToken'])
 
   const navigate = useNavigate()
 
@@ -50,13 +52,14 @@ const Login = () => {
       data: { login, password },
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
+      withCredentials: false,
     })
     .then((response: any) => {
       setLoginSuccess(true)
-      const { accessToken, refreshToken, username, userId } = response;
-      setTokens(accessToken, refreshToken);
+      const { accessToken, refreshToken: _refreshToken, username, userId } = response;
+      setAccessToken(accessToken);
+      setCookie('refreshToken', _refreshToken);
       setLoggedUsername(username);
       setLoggedUserId(userId);
       navigate("/user-panel")
@@ -141,7 +144,7 @@ const Login = () => {
           </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button onClick={handleLogin} disabled={disabled} type="submit" className="w-full" cursor-pointer>
+        <Button onClick={handleLogin} disabled={disabled} type="button" className="w-full" cursor-pointer>
            Login {isLoading ? <Spinner /> : <IconKey />}
         </Button>
         <p className="text-sm text-center">Not logged yet? <button onClick={() => navigate("/signup")} className="text-blue-500 hover:text-blue-700">Sign up</button></p>

@@ -58,8 +58,8 @@ const Signup = () => {
       data: { email, username, password },
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
+      withCredentials: false,
     })
     .then((response: any) => {
       setRegisterSuccess(true)

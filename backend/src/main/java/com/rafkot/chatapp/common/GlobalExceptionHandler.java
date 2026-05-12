@@ -1,6 +1,7 @@
 package com.rafkot.chatapp.common;
 
 import com.rafkot.chatapp.user.exception.UserValidationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,4 +17,12 @@ public class GlobalExceptionHandler {
                 .status(exception.getHttpStatus())
                 .body(exception.getErrors());
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", ex.getMessage()));
+    }
+
 }

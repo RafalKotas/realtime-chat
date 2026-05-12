@@ -44,11 +44,12 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<RefreshResponseDto> refreshToken(@RequestBody RefreshRequestDto refreshRequestDto) {
         // refreshToken is source of truth
+        log.info("Request for new access token: validating refresh token...");
         User user = refreshTokenService.validateRefreshToken(refreshRequestDto.refreshToken());
 
+        log.info("Refresh token validated successfully");
         String newAccessToken = jwtService.generateToken(user.getUsername());
 
         return ResponseEntity.ok(new RefreshResponseDto(newAccessToken));
     }
-
 }
