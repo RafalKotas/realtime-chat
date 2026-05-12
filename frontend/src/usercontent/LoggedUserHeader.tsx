@@ -24,7 +24,30 @@ const LoggedUserHeader = () => {
   return (
     <TooltipProvider>
         <header className="z-50 flex w-full shrink-0 items-center justify-between border-b bg-gray-200 px-2">
-            <section>
+            <section className='flex flex-row gap-2 items-center'>
+                <Tooltip>
+                    <TooltipTrigger>
+                        <Avatar className="w-6 h-6 rounded-full cursor-pointer" onClick={() => {
+                            navigate('/profile')
+                        }}>
+                            <AvatarImage src='https://github.com/shadcn.png' />
+                            <AvatarFallback>{loggedUsername?.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        {loggedUsername}
+                    </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                    <TooltipTrigger onClick={() => {
+                        navigate('/user-panel')
+                    }}>
+                        <IconMail/>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        Back to chats
+                    </TooltipContent>
+                </Tooltip>
                 <h1 className="text-sm font-semibold">Welcome <span className="font-bold text-orange-600">{loggedUsername}</span> to the chat!</h1>
             </section>
             <section>
