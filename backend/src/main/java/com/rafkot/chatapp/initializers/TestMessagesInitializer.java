@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.*;
 
-@Profile("dev")
+@Profile("!test")
 @Slf4j
 @Component
 @Order(2)
