@@ -3,8 +3,7 @@ package com.rafkot.chatapp.auth.dto;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 class RegistrationRequestDtoTest {
@@ -24,9 +23,9 @@ class RegistrationRequestDtoTest {
         );
 
         // then
-        assertNotNull(registrationRequestDto);
-        assertEquals("exampleUsername", registrationRequestDto.username());
-        assertEquals("exampleUserEmail@mail.com", registrationRequestDto.email());
-        assertEquals("superStrongPassword", registrationRequestDto.password());
+        assertThat(registrationRequestDto).isNotNull();
+        assertThat(registrationRequestDto.username()).isEqualTo("exampleUsername");
+        assertThat(registrationRequestDto.email()).isEqualTo("exampleUserEmail@mail.com");
+        assertThat(registrationRequestDto.password()).isEqualTo("superStrongPassword");
     }
 }
