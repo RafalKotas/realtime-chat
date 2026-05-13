@@ -1,10 +1,8 @@
 package com.rafkot.chatapp.user.exception;
 
-import java.util.UUID;
-
 public class UserNotFoundException extends RuntimeException {
 
-    public UserNotFoundException(UUID userId) {
-        super("User with id %s not found".formatted(userId));
+    public UserNotFoundException(String username) {
+        super("User with name %s not found".formatted(username));
     }
 }
