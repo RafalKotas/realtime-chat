@@ -34,6 +34,6 @@ class ContactMapperTest {
         assertThat(result).isNotNull();
         assertThat(result.id()).isEqualTo(UUID.fromString("11111-22222-33333-4444-55555"));
         assertThat(result.username()).isEqualTo("test-username");
-        assertThat(result.avatarUrl()).isNull();
+        assertThat(result.imgUrl()).isNull();
     }
 }

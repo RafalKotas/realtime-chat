@@ -29,6 +29,6 @@ class ContactDtoTest {
         assertNotNull(contactDto);
         assertThat(contactDto.id()).isEqualTo(uuid);
         assertThat(contactDto.username()).isEqualTo("testUser");
-        assertThat(contactDto.avatarUrl()).isEqualTo("www.testAvatar.com");
+        assertThat(contactDto.imgUrl()).isEqualTo("www.testAvatar.com");
     }
 }

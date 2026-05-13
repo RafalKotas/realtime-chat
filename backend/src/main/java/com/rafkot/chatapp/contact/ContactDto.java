@@ -5,5 +5,5 @@ import java.util.UUID;
 public record ContactDto (
         UUID id,
         String username,
-        String avatarUrl
+        String imgUrl
 ) { }
