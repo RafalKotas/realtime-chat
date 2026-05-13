@@ -55,7 +55,7 @@ public class TestMessagesInitializer implements CommandLineRunner {
 
         List<String> usernames = mapper.readValue(
                 USERNAMES_FILE.toFile(),
-                new TypeReference<List<String>>() {}
+                new TypeReference<>() {}
         );
 
         List<User> users = userRepository.findAllByUsernameIn(usernames);
@@ -94,7 +94,7 @@ public class TestMessagesInitializer implements CommandLineRunner {
         List<MessageRaw> allMessages = new ArrayList<>();
 
         for (UserPair pair : pairs) {
-            int convId = pickConversation(usageMap, random);
+            int convId = pickConversation(usageMap);
             List<MockMessageEntry> template = templates.get(convId);
 
             List<MessageRaw> msgs = mapConversationToMessages(template, pair.u1(), pair.u2());
@@ -137,7 +137,7 @@ public class TestMessagesInitializer implements CommandLineRunner {
         return map;
     }
 
-    private int pickConversation(Map<Integer, Integer> usageMap, Random random) {
+    private int pickConversation(Map<Integer, Integer> usageMap) {
         List<Integer> available = usageMap.entrySet().stream()
                 .filter(e -> e.getValue() > 0)
                 .map(Map.Entry::getKey)
@@ -147,7 +147,7 @@ public class TestMessagesInitializer implements CommandLineRunner {
             throw new IllegalStateException("No available conversations left to assign.");
         }
 
-        int chosen = available.get(random.nextInt(available.size()));
+        int chosen = available.get(TestMessagesInitializer.random.nextInt(available.size()));
         usageMap.put(chosen, usageMap.get(chosen) - 1);
         return chosen;
     }

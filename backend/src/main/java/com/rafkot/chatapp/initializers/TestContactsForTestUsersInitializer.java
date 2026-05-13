@@ -42,7 +42,7 @@ public class TestContactsForTestUsersInitializer implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         log.info("Generating {} test users for mock contacts...", FIRST_NAMES.size() * LAST_NAMES.size());
 
         List<User> users = generateUsers();
