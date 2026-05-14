@@ -1,23 +1,38 @@
 import React, { useState } from 'react'
-import { Sidebar, 
+import { 
+  Sidebar, 
     SidebarHeader, 
     SidebarContent,
     SidebarFooter, 
     SidebarMenu, 
     SidebarMenuItem
 } from '@/components/ui/sidebar'
-import { Input } from '@/components/ui/input'
-import { IconSearch } from '@tabler/icons-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+} from '@/components/ui/dialog'
+import { 
+  Avatar, 
+  AvatarFallback, 
+  AvatarImage 
+} from '@/components/ui/avatar'
+import { 
+  Tooltip, 
+  TooltipContent, 
+  TooltipProvider, 
+  TooltipTrigger
+} from '@/components/ui/tooltip'
+import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/input-group'
+import { IconFilter } from '@tabler/icons-react'
 import { useMessagingStore} from '@/messaging/messaging-store'
 import type { Message } from '@/messaging/messaging-store'
+import ContactFinder from './ContactFinder'
+import { messageTimeCaption } from '@/messaging/dateUtils'
 
 const ContactsSidebar = () => {
 
   const {currentChatReceiverUsername, userChats, setCurrentChatReceiverUsername, getLastMessage, filterUserChats} = useMessagingStore()
   
   const [searchValue, setSearchValue] = useState<string>("")
+  const [open, setOpen] = useState<boolean>(false)
   
   const filteredUserChats = searchValue
   ? filterUserChats(searchValue)
@@ -36,18 +51,24 @@ const ContactsSidebar = () => {
     const shortenedMessage = message.content.length > 20 ? message.content.substring(0, 15) + "..." : message.content
     return <>{message.senderUsername === contactUsername ? "" : <b>You: </b>}<span>{shortenedMessage}</span></>
   }
+  
 
   const contactTabBasicStyles = "flex flex-row gap-2 p-2 mb-2 items-center cursor-pointer rounded-md bg-gray-200 hover:bg-lime-300 hover:border-2 hover:border-gray-400 hover:mb-1" 
 
   return (
     <Sidebar className="pt-10">
       <SidebarHeader className="flex flex-column items-center rounded-md">
-          <header className="text-sm font-bold text-gray-800 mb-2 bg-gray-200 p-2 rounded-md">CONTACTS</header>
+        <ContactFinder open={open} setOpen={setOpen} />
           <div className="flex flex-row items-center rounded-md">
-            <Input placeholder="Search contacts..." className="w-full cursor-text" onChange={handleSearch}/>
-            <IconSearch className="cursor-pointer"/>
+            <InputGroup>
+              <InputGroupInput className="w-full cursor-text" placeholder="Search chats..." onChange={handleSearch}/>
+              <InputGroupAddon>
+              <IconFilter/>
+              </InputGroupAddon>
+              <InputGroupAddon align="inline-end">{searchValue.length > 0 && (Object.keys(filteredUserChats).length + " results")} </InputGroupAddon>
+            </InputGroup>
           </div>
-      </ SidebarHeader>
+      </SidebarHeader>
       <TooltipProvider>
         <SidebarContent>
           <SidebarMenu className="flex flex-col gap-2 p-4 overflow-y-auto z-0">
@@ -70,7 +91,7 @@ const ContactsSidebar = () => {
                           <p className="text-sm text-gray-800">
                             {getLastMessageContent(contactUsername, getLastMessage(contactUsername))}
                           </p>
-                          <p className="f text-sm text-gray-800">12:00 PM</p>
+                          <p className="text-xs text-gray-800">{messageTimeCaption(getLastMessage(contactUsername)?.createdDate || "")}</p>
                       </div>
                     </SidebarMenuItem>
                   </TooltipTrigger>

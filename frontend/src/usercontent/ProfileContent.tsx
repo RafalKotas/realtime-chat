@@ -1,33 +1,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import request from "@/authentication/authClient"
-import { useState, useEffect } from "react"
-import { useAuthStore } from "@/authentication/user-store"
+import React from "react"
 
+interface ProfileContentProps {
+    username: string
+    email: string | null
+    joinedAt: string | null
+    lastEditedAt: string | null
+}
 
-const ProfileContent = () => {
-    const { loggedUsername } = useAuthStore()
-    const [username, setUsername] = useState(loggedUsername ?? "")
-    const [email, setEmail] = useState<string | null>(null)
-    const [joinedAt, setJoinedAt] = useState<string | null>(null)
-    const [lastEditedAt, setLastEditedAt] = useState<string | null>(null)
-
-    useEffect(() => {
-        request("/api/user/me", {
-            method: "GET",
-        })
-        .then((response: any) => {
-            setUsername(response.username)
-            setEmail(response.email)
-            setJoinedAt(response.joinedAt)
-            setLastEditedAt(response.lastEditedAt)  
-        })
-        .catch((error: any) => {
-            console.error(error)
-        })
-    }, [loggedUsername])
-    
+const ProfileContent = React.memo(function Component({ username, email, joinedAt, lastEditedAt }: ProfileContentProps) {
     return (
         <div className="flex flex-col items-center justify-center min-w-1/2">
             <Card className=" h-3/4 w-100">
@@ -59,7 +42,7 @@ const ProfileContent = () => {
                 </CardContent>
             </Card>
         </div>
-    )
-}
+        )
+    })
 
 export default ProfileContent

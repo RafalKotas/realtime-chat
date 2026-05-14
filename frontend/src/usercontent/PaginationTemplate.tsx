@@ -24,7 +24,7 @@ const PaginationTemplate = ({ currentPage, totalPages, onPageChange }: { current
       <PaginationContent>
         <PaginationItem>
             {
-                currentPage > 1 ? <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)} /> : <Badge variant="outline">First page</Badge>
+                currentPage > 1 ? <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)} /> : <Badge className="bg-yellow-200" variant="outline">First page</Badge>
             }
         </PaginationItem>
         {
@@ -40,7 +40,7 @@ const PaginationTemplate = ({ currentPage, totalPages, onPageChange }: { current
         }
         <PaginationItem>
             {
-                currentPage < totalPages ? <PaginationNext href="#" onClick={() => handlePageChange(currentPage + 1)} /> : <Badge variant="outline">Last page</Badge>
+                currentPage < totalPages ? <PaginationNext href="#" onClick={() => handlePageChange(currentPage + 1)} /> : <Badge className="bg-yellow-200" variant="outline">Last page</Badge>
             }
         </PaginationItem>
       </PaginationContent>
