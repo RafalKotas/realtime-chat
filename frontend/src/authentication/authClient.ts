@@ -26,10 +26,21 @@ const client = axios.create({
   withCredentials: true,
 })
 
+const isPublicEndpoint = (url: string) => {
+  return (
+    url.startsWith("/api/auth/") ||
+    url.startsWith("/api/user/me") ||
+    url.startsWith("/api/contacts") ||
+    url.startsWith("/api/profile")
+  )
+}
+
 client.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = useAuthStore.getState().accessToken
-  if (token) {
-    config.headers = config.headers || {}
+  
+  const url = config.url ?? ""
+
+  if (token && !isPublicEndpoint(url)) {
     config.headers["Authorization"] = `Bearer ${token}`
   }
   return config
@@ -61,14 +72,8 @@ client.interceptors.response.use((response: AxiosResponse) => response, async (e
   isRefreshing = true
 
   try {
-    const response = await axios.post(
-      "/api/auth/refresh", 
-      {}, 
-      {
-        baseURL: import.meta.env.VITE_API_BASE_URL,
-        withCredentials: true,
-    })
-
+    const response = await client.post("/api/auth/refresh", {})
+    
     const newAccessToken = response.data.accessToken
     useAuthStore.getState().setAccessToken(newAccessToken)
 
