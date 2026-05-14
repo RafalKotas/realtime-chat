@@ -18,7 +18,9 @@ interface MessagingState {
     setUserChats: (userChats: Record<string, Message[]>) => void;
     setCurrentChatReceiverUsername: (receiverUsername: string) => void,
     addMessageToChat: (message: Message, receiverUsername: string) => void,
-    filterUserChats: (searchValue: string) => Record<string, Message[]>
+    addIncomingMessage: (message: Message, loggedUsername: string) => void,
+    filterUserChats: (searchValue: string) => Record<string, Message[]>,
+    addContact: (username: string) => void
 }
 
 const emptyMessage: Message = { content: "No messages yet", createdDate: "", modifiedDate: "", senderUsername: "", receiverUsername: "", messageId: "" }
@@ -33,7 +35,22 @@ export const useMessagingStore = create<MessagingState>()(
             setUserChats: (userChats: Record<string, Message[]>) => set({ userChats }), 
             setCurrentChatReceiverUsername: (receiverUsername: string) => set({ currentChatReceiverUsername: receiverUsername }),
             addMessageToChat: (message: Message, receiverUsername: string) => set((state) => ({ userChats: { ...state.userChats, [receiverUsername]: [...(state.userChats[receiverUsername] || []), message] } })),
+            addIncomingMessage: (message: Message, loggedUsername: string) => {
+                const partner = message.senderUsername === loggedUsername ? message.receiverUsername : message.senderUsername
+
+                if (!get().userChats[partner]) {
+                    set((state) => ({ userChats: { ...state.userChats, [partner]: [] } }))
+                }
+
+                set((state) => ({
+                    userChats: {
+                        ...state.userChats,
+                        [partner]: [...(state.userChats[partner] || []), message]
+                    }
+                }))
+            },
             filterUserChats: (searchValue: string) => Object.fromEntries(Object.entries(get().userChats).filter(([key, _]) => key.toLowerCase().includes(searchValue.toLowerCase()))) as Record<string, Message[]>,
+            addContact: (username: string) => set((state) => ({ userChats: { ...state.userChats, [username]: [] } })),
         }) as MessagingState,
         {
             name: "messaging-storage",
