@@ -24,7 +24,7 @@ const MessagesContainer = () => {
 
 
     return (
-            <section id="messages-list" className="flex flex-col gap-2 overflow-y-auto">
+            <section id="messages-list" className="flex flex-col gap-2 h-19/20 overflow-y-auto mt-2">
                 {userChats[currentChatReceiverUsername] && userChats[currentChatReceiverUsername].map((message: Message) => (
                     <div key={message.messageId} className="flex flex-col gap-2">
                         <div className={messageItemStyle(message)}>
