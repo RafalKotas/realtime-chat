@@ -6,14 +6,18 @@ A simple real-time chat app project built for learning purposes.
 
 ## 📌 Project status
 
-🟡 Stage: User Authentication & Registration (Active Development)
-📅 Last Updated: 2026-05-02
+🟢 Stage: Real-time Messaging & ngrok Integration 
+📅 Last Updated: 2026-05-15
 
 Currently:
 - Backend with Spring Security & JWT Authentication ✅
 - Frontend with React + TypeScript + Vite ✅
 - User Registration & Login System ✅
 - Docker setup for MySQL & SonarQube ✅
+- Refresh Token via HttpOnly Cookie
+- WebSocket (STOMP) real-time messaging
+- Contact List
+- ngrok tunneling (free plan)
 
 ---
 
@@ -42,8 +46,8 @@ Currently:
 
 ```
 realtime-chat/
- ├── backend/        ← Spring Boot
- ├── frontend/       ← React
+ ├── backend/        ← Spring Boot API + WebSocket
+ ├── frontend/       ← React + TS client
  ├── docs/
  │    ├── backend/   ← tutorial/documentation BE
  │    ├── frontend/  ← tutorial/documentation FE
@@ -65,13 +69,13 @@ realtime-chat/
 
 ---
 
-### 1️⃣ Backend Setup
+## 1️⃣ Backend Setup
 
-#### Start MySQL & SonarQube containers
+### Start MySQL & SonarQube containers
 
 ```bash
 # Navigate to project root
-cd realtime-chat
+cd realtime-chat/backend/tools
 
 # Start Docker containers (MySQL on port 3336, SonarQube on port 9000)
 docker-compose up -d
@@ -80,49 +84,52 @@ docker-compose up -d
 docker-compose ps
 ```
 
-### MySQL Connection Details:
+**MySQL**
+- Host: `localhost:3336`
+- Database: `chat`
+- User: `chatuser`
+- Password: (set in docker-compose)
 
-Host: localhost:3336
-Database: chat
-User: chatuser
-Password: <CREATE_YOUR_PASSWORD>
-
-### SonarQube
+**SonarQube**
 - URL: [SonarQube dashboard](http://localhost:9000)
 - Default credentials: `admin` / `admin`
 
 ---
 
-### Install dependencies & run tests
+## Testing
 
-``` bash
-cd backend
-
-# Run all tests with coverage
-mvn clean verify
-
-# or shorter version
-mvn test
-```
-
----
-
-### Build the application
+### Backend Tests
 
 ```bash
 cd backend
 
-# Clean build
-mvn clean package
+# Run all tests
+mvn test
 
-# Skip tests during build
-mvn clean package -DskipTests
+# Run tests with coverage report
+mvn clean verify
+
+# Run specific test class
+mvn test -Dtest=UserServiceTest
+
+# Run tests with output
+mvn test -X
 ```
+
+**Coverage reports:** `backend/target/site/jacoco/index.html`
 
 ---
 
-### Start Spring Boot in development mode
+**Run backend tests**
 
+```bash
+# go to main folder
+cd realtime-chat/backend/
+# Run all tests with coverage
+mvn clean verify
+```
+
+**Start backend**
 ```bash
 cd backend
 
@@ -131,17 +138,35 @@ cd backend
 
 # OR with debug mode enabled
 ./mvnw spring-boot:run "-Dspring-boot.run.arguments=--debug"
-```
-
 ---
 
-The backend will be available at: [backend basic endpoint](http://localhost:8080)
+**Build the application**
+
+```bash
+# go to main folder
+cd realtime-chat/backend/
+
+# Clean build
+mvn clean package
+
+# Skip tests during build
+mvn clean package -DskipTests
+```
+
+Backend runs at: [backend basic endpoint](http://localhost:8080)
 
 ### API Endpoints:
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - Login (returns JWT tokens)
-- `POST /api/auth/refresh` - Refresh access token
-- `GET /api/user/me` - Get current user profile (requires authentication)
+- `POST /api/auth/register` - User registration [`AuthController`]
+- `POST /api/auth/refresh` - Refresh access token (requires authentication with refresh token) [`RegistrationController`]
+- `POST /api/auth/login` - Login (returns JWT tokens) [`AuthController`]
+- `GET /api/user/me` - Get current user profile (requires authentication) [`UserProfileController`]
+- `POST /api/userc/hange-password` - Changes user password (requires authentication) [`UserProfileController`]
+- `GET /api/contacts` - Get all user's (`@RequestParam String username`) contacts [`ContactController`]
+- `DELETE /api/contacts/{id}` - Deletes contact with given id (`@PathVariable`) (requires authentication) [`ContactController`] - **REMOVE (unused)**
+- `GET /api/message/all/{uuid}` - Get map of user's with uuid(`String`, `@PathVariable`) non-empty chats (at least 1 message) as Map<String, List<MessageResponseDto>>
+- `GET /api/message/{userId}/{partnerUsername} - Get messages between user with userId (`UUID`, `@PathVariable`) and partnerUsername(`String`, `@PathVariable`) as List<MessageResponseDto>
+- `app/chat.send` - websocket endpoint for message sending, used internally
+
 
 ---
 
@@ -164,6 +189,47 @@ npm run preview
 ```
 
 The frontend will be available at: [frontend localhost](http://localhost:5173)
+
+---
+
+### 3️⃣ ngrok Tunneling (Free Plan)
+The free ngrok plan injects a browser warning page that breaks CORS and Websocket connections.
+
+To bypass it, **every Axios request must include:**.
+
+```TypeScript
+"ngrok-skip-browser-warning": "true"
+```
+
+This is already configured in:
+
+```bash
+frontend/src/authentication/authClient.ts
+```
+
+### WebSocket URL example:
+```
+wss://<your-ngrok-domain>.ngrok-free-dev/ws-raw
+```
+
+### Refresh Token Cookie
+
+The backend sets a secure, cross-site cookie:
+
+```Java
+ResponseCookie.from("refreshToken", token)
+.httpOnly(true)
+.secure(true)
+.sameSite("None")
+.partitioned(true)
+.path("/")
+.build();
+```
+
+This ensures compatibility with:
+- HTTPS
+- ngrok
+- Chrome / Firefox strict cookie policies
 
 ---
 
@@ -190,30 +256,6 @@ mvn clean verify sonar:sonar \
 ```
 
 #### View results at: (http://localhost:9000/projects)
-
----
-
-## Testing
-
-### Backend Tests
-
-```bash
-cd backend
-
-# Run all tests
-mvn test
-
-# Run tests with coverage report
-mvn clean verify
-
-# Run specific test class
-mvn test -Dtest=UserServiceTest
-
-# Run tests with output
-mvn test -X
-```
-
-**Coverage reports:** `backend/target/site/jacoco/index.html`
 
 ---
 
@@ -248,13 +290,17 @@ docker-compose down
 docker-compose down -v
 ```
 
-
-
 ---
 
 ## 🧭 Feature Plan
+Basic:
 - ☑️ User Registration
 - ☑️ Login with JWT
-- ☐ Contact List
 - ☑️ Real-time Messaging (WebSocket)
-- ☐ (additional) Online Status
+- ☑️ Refresh Token (HttpOnly cookie)
+- ☑️ Contact List
+- ☑️ ngrok tunneling support
+Additional
+- ☐ Online Status
+- ☐ Message Read/Unread
+- ☐ UI improvements
