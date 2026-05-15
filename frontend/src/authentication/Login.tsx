@@ -51,7 +51,7 @@ const Login = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      withCredentials: false,
+      withCredentials: true,
     })
     .then((response: any) => {
       setLoginSuccess(true)
