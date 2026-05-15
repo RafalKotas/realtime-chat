@@ -40,7 +40,7 @@ const MessagesContainer = () => {
                             </Item>
                         </div>
                         <p className={messageDateStyle(message) + " text-xs text-gray-500"}>
-                            {messageTimeCaption(message.createdDate)}
+                            {messageTimeCaption(message.createdDate ?? "")}
                         </p>
                     </div>
                 ))}
