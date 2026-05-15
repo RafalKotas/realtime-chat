@@ -59,13 +59,11 @@ class ContactControllerTest {
                     [
                         {
                           "username": "firstTestContact",
-                          "id": "00011111-2222-3333-4444-000000011111",
-                          "avatarUrl": null
+                          "id": "00011111-2222-3333-4444-000000011111"
                         },
                                                 {
                           "username": "secondTestContact",
-                          "id": "00011111-2222-3333-4444-000000022222",
-                          "avatarUrl": null
+                          "id": "00011111-2222-3333-4444-000000022222"
                         }
                     ]
                 """);
