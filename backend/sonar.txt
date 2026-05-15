@@ -1,0 +1,7 @@
+token: sqa_9a3a074cc8fd771c54521eaed2f9daaa65410eab
+
+mvn clean verify sonar:sonar "-Dsonar.projectKey=chatapp" "-Dsonar.login=sqa_9a3a074cc8fd771c54521eaed2f9daaa65410eab"
+
+command:
+mvn clean verify sonar:sonar -Dsonar.projectKey=chatapp -Dsonar.login=sqa_2cc8528078269fe524d103db9c1e9978f6694e50
+mvn clean verify sonar:sonar "-Dsonar.projectKey=chatapp" "-Dsonar.organization=chatapp" "-Dsonar.host.url=https://sonarcloud.io" "-Dsonar.token=sqa_2cc8528078269fe524d103db9c1e9978f6694e50"

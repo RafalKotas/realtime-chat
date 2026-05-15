@@ -256,5 +256,5 @@ docker-compose down -v
 - ☑️ User Registration
 - ☑️ Login with JWT
 - ☐ Contact List
-- ☐ Real-time Messaging (WebSocket)
+- ☑️ Real-time Messaging (WebSocket)
 - ☐ (additional) Online Status
