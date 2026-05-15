@@ -75,6 +75,17 @@ const SecurityContent = () => {
                                         required 
                                     />
                                 </div>
+                                {
+                                    password.length > 0 && confirmPassword.length > 0 && password !== confirmPassword && (
+                                        <Alert className="bg-red-500 text-white flex items-center gap-3 justify-between" variant="destructive">
+                                            <b>Passwords do not match</b>
+                                            <span onClick={() => {
+                                                handlePasswordChange({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>)
+                                                handleConfirmPasswordChange({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>)
+                                            }} className="hover:bg-red-800 rounded-full p-1 text-white cursor-pointer"><IconXboxX /></span>
+                                        </Alert>
+                                    )
+                                }
                                 {passwordChangedSuccess && (
                                     <Alert className="bg-green-500 text-white flex items-center gap-3 justify-between" variant="default">
                                         <b>Password changed successfully</b>
