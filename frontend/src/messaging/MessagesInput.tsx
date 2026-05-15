@@ -29,18 +29,18 @@ const MessagesInput = () => {
         const newMessage: Message = {
             messageId: crypto.randomUUID() as string,
             senderUsername: loggedUsername || "",
-            receiverUsername: currentChatReceiverUsername,
+            receiverUsername: currentChatReceiverUsername || "",
             content: message,
             createdDate: new Date().toISOString(),
             modifiedDate: new Date().toISOString()
         }
         setMessage("");
-        addMessageToChat(newMessage, currentChatReceiverUsername);
+        addMessageToChat(newMessage, currentChatReceiverUsername || "");
         if (stompClient) {
             stompClient.publish({
               destination: "/app/chat.send",
               body: JSON.stringify({
-                recipientUsername: currentChatReceiverUsername,
+                recipientUsername: currentChatReceiverUsername || "",
                 content: message
               })
             });
