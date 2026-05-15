@@ -65,8 +65,10 @@ public class TestContactsForTestUsersInitializer implements CommandLineRunner {
                 user.setEmail(username + "@mail.com");
                 user.setPassword(encoded);
 
-                users.add(user);
-                log.info("Generated user: {}", username);
+                if (!userRepository.existsByUsername(username)) {
+                    users.add(user);
+                    log.info("Generated user: {}", username);
+                }
             }
         }
 
@@ -102,7 +104,7 @@ public class TestContactsForTestUsersInitializer implements CommandLineRunner {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         int maxContacts = 100;
-        int bound = maxContacts - MIN_REQUIRED_CONTACTS + 1; // ile różnych wartości
+        int bound = maxContacts - MIN_REQUIRED_CONTACTS + 1;
         int targetContacts = MIN_REQUIRED_CONTACTS + RANDOM.nextInt(bound);
 
         List<Contact> result = new ArrayList<>();
