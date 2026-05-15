@@ -13,14 +13,16 @@ export interface Message {
 
 interface MessagingState {
     userChats: Record<string, Message[]>,
-    currentChatReceiverUsername: string,
+    currentChatReceiverUsername: string | null | undefined,
     getLastMessage: (username: string) => Message | null,
     setUserChats: (userChats: Record<string, Message[]>) => void;
     setCurrentChatReceiverUsername: (receiverUsername: string) => void,
     addMessageToChat: (message: Message, receiverUsername: string) => void,
     addIncomingMessage: (message: Message, loggedUsername: string) => void,
     filterUserChats: (searchValue: string) => Record<string, Message[]>,
-    addContact: (username: string) => void
+    addContact: (username: string) => void,
+    removeUserChatByUsername: (username: string) => void,
+    setUserChat: (username: string, messages: Message[]) => void
 }
 
 const emptyMessage: Message = { content: "No messages yet", createdDate: "", modifiedDate: "", senderUsername: "", receiverUsername: "", messageId: "" }
@@ -30,7 +32,7 @@ export const useMessagingStore = create<MessagingState>()(
     persist(
         (set, get) => ({
             userChats: emptyUserChats,
-            currentChatReceiverUsername: null as string | null,
+            currentChatReceiverUsername: null,
             getLastMessage: (username: string) => get().userChats[username]?.at(-1) || emptyMessage,
             setUserChats: (userChats: Record<string, Message[]>) => set({ userChats }), 
             setCurrentChatReceiverUsername: (receiverUsername: string) => set({ currentChatReceiverUsername: receiverUsername }),
@@ -51,10 +53,34 @@ export const useMessagingStore = create<MessagingState>()(
             },
             filterUserChats: (searchValue: string) => Object.fromEntries(Object.entries(get().userChats).filter(([key, _]) => key.toLowerCase().includes(searchValue.toLowerCase()))) as Record<string, Message[]>,
             addContact: (username: string) => set((state) => ({ userChats: { ...state.userChats, [username]: [] } })),
+            removeUserChatByUsername: (username: string) =>
+                set((state) => {
+                    const newUserChats = Object.fromEntries(
+                        Object.entries(state.userChats).filter(([key]) => key !== username)
+                    )
+
+                    const firstRemaining = Object.keys(newUserChats)[0] ?? null
+                    const prevCurrent = state.currentChatReceiverUsername ?? null
+                    const nextCurrent =
+                        prevCurrent === username ||
+                        (prevCurrent != null && !(prevCurrent in newUserChats))
+                            ? firstRemaining
+                            : prevCurrent
+
+                    return {
+                        userChats: newUserChats,
+                        currentChatReceiverUsername: nextCurrent,
+                    }
+                }),
+            setUserChat: (username: string, messages: Message[]) => set((state) => ({ userChats: { ...state.userChats, [username]: messages } }))
         }) as MessagingState,
         {
             name: "messaging-storage",
             storage: createJSONStorage(() => localStorage),
+            partialize: (state) => ({
+                userChats: state.userChats,
+                // currentChatReceiverUsername is NOT saved
+            })
         }
     )
 );
