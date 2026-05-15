@@ -15,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -49,15 +48,14 @@ class RefreshTokenServiceTest {
     @Test
     void shouldCreateRefreshToken() {
         // given
-        UUID userId = UUID.randomUUID();
-        User testUser = new User("testuser", "testemail@mail.com", "testpswd");
-        testUser.setId(userId);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
+        String username = "testUser";
+        User testUser = new User(username, "testemail@mail.com", "testpswd");
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
         when(refreshTokenRepository.save(org.mockito.Mockito.any(RefreshToken.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         // when
-        RefreshToken refreshToken = subject.createRefreshToken(userId);
+        RefreshToken refreshToken = subject.createRefreshToken(username);
 
         // then
         assertNotNull(refreshToken);
@@ -69,14 +67,12 @@ class RefreshTokenServiceTest {
     @Test
     void shouldThrowExceptionWhenUserNotFound() {
         // given
-        UUID userId = UUID.randomUUID();
-
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        when(userRepository.findByUsername("testUser")).thenReturn(Optional.empty());
 
         // when + then
-        assertThatThrownBy(() -> subject.createRefreshToken(userId))
+        assertThatThrownBy(() -> subject.createRefreshToken("testUser"))
                 .isInstanceOf(UserNotFoundException.class)
-                .hasMessageContaining(userId.toString());
+                .hasMessageContaining("User with name testUser not found");
     }
 
     @Test

@@ -34,4 +34,12 @@ public class MessageService {
                                 .toList()
                 ));
     }
+
+    public List<MessageResponseDto> getMessagesBetweenUsers(UUID userId, String partnerUsername) {
+
+        return messageRepository.findConversationMessages(userId, partnerUsername).stream()
+                .map(messageMapper::mapMessageToDto)
+                .sorted(Comparator.comparing(MessageResponseDto::createdDate))
+                .toList();
+    }
 }

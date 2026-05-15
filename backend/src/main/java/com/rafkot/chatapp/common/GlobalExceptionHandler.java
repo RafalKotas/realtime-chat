@@ -1,5 +1,6 @@
 package com.rafkot.chatapp.common;
 
+import com.rafkot.chatapp.contact.ContactNotFoundException;
 import com.rafkot.chatapp.user.exception.UserValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ContactNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleContactNotFound(ContactNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of("contact", ex.getMessage()));
     }
 
 }

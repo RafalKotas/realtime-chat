@@ -11,13 +11,14 @@ import { IconMail } from '@tabler/icons-react'
 const LoggedUserHeader = () => {
   const navigate = useNavigate()
 
-  const { removeAccessToken, loggedUsername } = useAuthStore()
-
+  const { loggedUsername } = useAuthStore()
   const [, , removeCookie] = useCookies(['refreshToken'])
 
   const handleLogout = () => {
-    removeAccessToken()
     removeCookie('refreshToken')
+    localStorage.removeItem("auth-storage")
+    localStorage.removeItem("messaging-storage")
+    localStorage.removeItem("accessToken")
     navigate('/login')
   }
 

@@ -6,11 +6,15 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { useAuthStore } from "@/authentication/user-store"
 import request from "@/authentication/authClient"
+import { Alert } from "@/components/ui/alert"
+import { IconXboxX } from "@tabler/icons-react"
 
 
 const SecurityContent = () => {
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+    const [passwordChangedSuccess, setPasswordChangedSuccess] = useState(false)
+    const [passwordChangedError, setPasswordChangedError] = useState(false)
 
     const { loggedUsername } = useAuthStore()
 
@@ -31,10 +35,10 @@ const SecurityContent = () => {
             },
         })
         .then((response: any) => {
-            console.log(response)
+            setPasswordChangedSuccess(true)
         })
         .catch((error: any) => {
-            console.error(error)
+            setPasswordChangedError(true)
         })
     }
 
@@ -71,6 +75,29 @@ const SecurityContent = () => {
                                         required 
                                     />
                                 </div>
+                                {
+                                    password.length > 0 && confirmPassword.length > 0 && password !== confirmPassword && (
+                                        <Alert className="bg-red-500 text-white flex items-center gap-3 justify-between" variant="destructive">
+                                            <b>Passwords do not match</b>
+                                            <span onClick={() => {
+                                                handlePasswordChange({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>)
+                                                handleConfirmPasswordChange({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>)
+                                            }} className="hover:bg-red-800 rounded-full p-1 text-white cursor-pointer"><IconXboxX /></span>
+                                        </Alert>
+                                    )
+                                }
+                                {passwordChangedSuccess && (
+                                    <Alert className="bg-green-500 text-white flex items-center gap-3 justify-between" variant="default">
+                                        <b>Password changed successfully</b>
+                                        <span onClick={() => setPasswordChangedSuccess(false)} className="hover:bg-green-800 rounded-full p-1 text-white cursor-pointer"><IconXboxX /></span>
+                                    </Alert>
+                                )}
+                                {passwordChangedError && (
+                                    <Alert className="bg-red-500 text-white flex items-center gap-3 justify-between" variant="destructive">
+                                        <b>Password change failed</b>
+                                        <span onClick={() => setPasswordChangedError(false)} className="hover:bg-red-800 rounded-full p-1 text-white cursor-pointer"><IconXboxX /></span>
+                                    </Alert>
+                                )}
                                 <Button type="button" onClick={handleSubmitNewPassword} className="w-fit self-center">Change password</Button>
                             </div>
                     </CardContent>

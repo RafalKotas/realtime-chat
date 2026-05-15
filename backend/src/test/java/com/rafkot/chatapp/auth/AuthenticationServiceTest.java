@@ -159,6 +159,7 @@ class AuthenticationServiceTest {
                 () -> subject.authenticate(request)
         );
 
+        // then
         assertThat(ex.getHttpStatus()).isEqualTo(HttpStatus.UNAUTHORIZED);
         assertThat(ex.getErrors()).containsEntry("password", "Incorrect password for given login");
     }

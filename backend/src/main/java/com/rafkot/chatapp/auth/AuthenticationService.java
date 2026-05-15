@@ -49,7 +49,7 @@ public class AuthenticationService {
             final Authentication authentication = authenticationManager.authenticate(authToken);
 
             final String accessToken = jwtService.generateToken(authentication);
-            final RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+            final RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getUsername());
 
             return new LoginResponseDto(user.getUsername(), user.getId().toString(), accessToken, refreshToken.getToken());
         } catch (AuthenticationException e) {

@@ -10,6 +10,7 @@ import request from "@/authentication/authClient";
 import { useAuthStore } from "@/authentication/user-store";
 import type { Message } from "@/messaging/messaging-store";
 import { useMessagingStore } from "@/messaging/messaging-store";
+import ContactHeader from "./ContactHeader";
 
 const LoggedUserPanel = () => {
 
@@ -48,7 +49,8 @@ const LoggedUserPanel = () => {
                         <ContactsSidebar />
                         <SidebarTrigger />
                         <Separator orientation="vertical" />
-                        <SidebarInset className="min-h-0 flex-1 p-4">
+                        <SidebarInset className="flex flex-col flex-1 justify-between min-h-0 p-4 pb-2">
+                            <ContactHeader />
                             <MessagesContainer />
                             <MessagesInput />
                         </SidebarInset>

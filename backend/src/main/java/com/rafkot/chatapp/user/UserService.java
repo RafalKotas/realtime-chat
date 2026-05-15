@@ -5,8 +5,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.UUID;
-
 import static org.springframework.http.HttpStatus.GONE;
 
 @Service
@@ -26,11 +24,6 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(GONE,
                         "The user account has been deleted or inactivated"));
-    }
-
-    public User getUserById(final UUID id) {
-        log.info("get user by uuid: {}", id);
-        return userRepository.findById(id).orElseThrow();
     }
 
     public void changePassword(String username, String password, String confirmPassword) {

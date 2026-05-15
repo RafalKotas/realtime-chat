@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -62,25 +61,6 @@ class UserServiceTest {
         assertThatThrownBy(() -> subject.getUserByUsername("missing"))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("The user account has been deleted or inactivated");
-    }
-
-    @Test
-    void shouldGetUserByIdWhenUserExists() {
-        // given
-        User user = new User();
-        UUID userId = UUID.fromString("11111-22222-33333-44444-55555");
-        user.setId(userId);
-
-        when(userRepository.findById(userId))
-                .thenReturn(Optional.of(user));
-
-        // when
-        User result = subject.getUserById(userId);
-
-        // then
-        assertThat(result)
-                .isNotNull()
-                .isEqualTo(user);
     }
 
     @Test

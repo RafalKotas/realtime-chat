@@ -29,18 +29,18 @@ const MessagesInput = () => {
         const newMessage: Message = {
             messageId: crypto.randomUUID() as string,
             senderUsername: loggedUsername || "",
-            receiverUsername: currentChatReceiverUsername,
+            receiverUsername: currentChatReceiverUsername || "",
             content: message,
             createdDate: new Date().toISOString(),
             modifiedDate: new Date().toISOString()
         }
         setMessage("");
-        addMessageToChat(newMessage, currentChatReceiverUsername);
+        addMessageToChat(newMessage, currentChatReceiverUsername || "");
         if (stompClient) {
             stompClient.publish({
               destination: "/app/chat.send",
               body: JSON.stringify({
-                recipientUsername: currentChatReceiverUsername,
+                recipientUsername: currentChatReceiverUsername || "",
                 content: message
               })
             });
@@ -48,10 +48,10 @@ const MessagesInput = () => {
     }
 
     return (
-        <div className="flex flex-row gap-2 min-h-0 sticky w-1/2 self-center bottom-5 border-t border-gray-300 pt-2 mb-5">
+        <div className="flex flex-row justify-center items-center gap-2 min-h-0 h-1/20 sticky w-1/2 self-center bottom-2 pb">
             <Input 
                 placeholder="Type your message here..." 
-                className="w-full" 
+                className="w-full bg-gray-100" 
                 value={message} 
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={(e) => {

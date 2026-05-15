@@ -25,7 +25,7 @@ class UserMapperTest {
     void shouldMapUserToUserProfileDto() {
         // given
         Instant now = Instant.now();
-        LocalDateTime dateTime = LocalDateTime.ofInstant(now, ZoneId.of("UTC"));
+        LocalDateTime dateTime = LocalDateTime.ofInstant(now, ZoneId.systemDefault());
         String dayOfMonth = dateTime.getDayOfMonth() + "";
         String month = dateTime.getMonth().toString().charAt(0) + dateTime.getMonth().toString().substring(1, 3).toLowerCase();
         String year = dateTime.getYear() + "";

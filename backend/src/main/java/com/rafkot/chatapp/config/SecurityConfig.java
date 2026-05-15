@@ -3,7 +3,7 @@ package com.rafkot.chatapp.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -35,24 +35,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(1)
-    SecurityFilterChain authSecurity(HttpSecurity http) {
+    SecurityFilterChain security(HttpSecurity http) {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .securityMatcher("/api/auth/**")
-                .csrf(AbstractHttpConfigurer::disable) // disabled because API is stateless and uses JWT (no cookies)
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .build();
-    }
-
-    @Bean
-    @Order(2)
-    SecurityFilterChain apiSecurity(HttpSecurity http) {
-        return http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .securityMatcher("/api/**")
-                .csrf(AbstractHttpConfigurer::disable) // disabled because API is stateless and uses JWT (no cookies)
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/contacts/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/user/me").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/user/profile/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/contacts/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/messages/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/user/change-password").authenticated()
+                        .anyRequest().permitAll()
+                )
                 .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
                 .build();
     }

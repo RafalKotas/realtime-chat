@@ -3,7 +3,7 @@ package com.rafkot.chatapp.auth.dto;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 class RefreshRequestDtoTest {
@@ -19,7 +19,7 @@ class RefreshRequestDtoTest {
         );
 
         // then
-        assertNotNull(refreshRequestDto);
-        assertEquals("xyz-test-refresh-token", refreshRequestDto.refreshToken());
+        assertThat(refreshRequestDto).isNotNull();
+        assertThat(refreshRequestDto.refreshToken()).isEqualTo("xyz-test-refresh-token");
     }
 }
