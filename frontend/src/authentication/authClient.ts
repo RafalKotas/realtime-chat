@@ -22,6 +22,7 @@ const client = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     Accept: "application/json, text/plain, */*",
+    "ngrok-skip-browser-warning": "true"
   },
   withCredentials: true,
 })
@@ -38,9 +39,10 @@ const isPublicEndpoint = (url: string) => {
 client.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = useAuthStore.getState().accessToken
   
-  const url = config.url ?? ""
+  const url = new URL(config.url ?? "", client.defaults.baseURL).pathname
 
   if (token && !isPublicEndpoint(url)) {
+    console.log("url: " + url)
     config.headers["Authorization"] = `Bearer ${token}`
   }
   return config
