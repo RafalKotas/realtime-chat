@@ -33,4 +33,6 @@ public interface ContactRepository extends JpaRepository<Contact, UUID> {
         WHERE (c.member.id = :memberId AND c.owner.id =:memberId) OR (c.member.id = :ownerId AND c.owner.id =:ownerId)
     """)
     boolean existByOwnerAndMember(UUID ownerId, UUID memberId);
+
+    boolean existsByOwnerIdAndMemberId(UUID ownerId, UUID memberId);
 }
