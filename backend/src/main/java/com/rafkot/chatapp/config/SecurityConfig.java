@@ -2,7 +2,6 @@ package com.rafkot.chatapp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -18,17 +17,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-@Profile("!test")
 @Configuration
 public class SecurityConfig {
 
     @Bean
     UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://sheath-vindicate-livable.ngrok-free.dev"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT","DELETE","OPTIONS"));
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(List.of("Set-Cookie"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -42,10 +41,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/contacts/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/contacts").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/me").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/profile/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/contacts/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/messages/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/message/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/user/change-password").authenticated()
                         .anyRequest().permitAll()
                 )

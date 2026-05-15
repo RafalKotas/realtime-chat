@@ -16,12 +16,10 @@ import { Alert } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "./user-store";
 import { Spinner } from "@/components/ui/spinner";
-import { useCookies } from "react-cookie";
 
 const Login = () => {
 
   const { setAccessToken, setLoggedUsername, setLoggedUserId } = useAuthStore()
-  const [, setCookie] = useCookies(['refreshToken'])
 
   const navigate = useNavigate()
 
@@ -53,13 +51,12 @@ const Login = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      withCredentials: false,
+      withCredentials: true,
     })
     .then((response: any) => {
       setLoginSuccess(true)
-      const { accessToken, refreshToken: _refreshToken, username, userId } = response;
+      const { accessToken, username, userId } = response;
       setAccessToken(accessToken);
-      setCookie('refreshToken', _refreshToken);
       setLoggedUsername(username);
       setLoggedUserId(userId);
       navigate("/user-panel")

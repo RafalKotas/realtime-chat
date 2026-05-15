@@ -27,7 +27,7 @@ const App = () => {
             accessToken ? (
               <StompSessionProvider
               key={accessToken}
-              url={`${wsUrl}/ws-raw`} 
+              url={`${wsUrl}`} 
               connectHeaders={{
                   Authorization: "Bearer " + accessToken
               }}
