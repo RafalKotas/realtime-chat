@@ -6,7 +6,7 @@ import com.rafkot.chatapp.auth.dto.RefreshResponseDto;
 import com.rafkot.chatapp.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,17 +24,22 @@ public class AuthController {
     public ResponseEntity<LoginResponseDto> authenticate(
             @RequestBody final AuthenticationRequestDto authenticationRequestDto
     ) {
-        ResponseEntity<LoginResponseDto> responseEntity;
-
         log.info("Trying to authenticate user: {}", authenticationRequestDto);
 
-        responseEntity = new ResponseEntity<>(authenticationService.authenticate(authenticationRequestDto), HttpStatus.OK);
+        LoginResponseDto loginResponse = authenticationService.authenticate(authenticationRequestDto);
 
-        responseEntity.getHeaders().add("Access-Control-Allow-Origin", "*");
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", loginResponse.refreshToken())
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .partitioned(true)
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60L)
+                .build();
 
-        log.info("Response entity: {}", responseEntity.getBody());
-
-        return responseEntity;
+        return ResponseEntity.ok()
+                .header("Set-Cookie", cookie.toString())
+                .body(loginResponse);
     }
 
     @PostMapping("/refresh")
