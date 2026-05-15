@@ -25,7 +25,7 @@ const MessagesContainer = () => {
 
     return (
             <section id="messages-list" className="flex flex-col gap-2 h-19/20 overflow-y-auto mt-2">
-                {userChats[currentChatReceiverUsername ?? ""].map((message: Message) => (
+                {userChats[currentChatReceiverUsername || ""] && userChats[currentChatReceiverUsername || "" as string].map((message: Message) => (
                     <div key={message.messageId} className="flex flex-col gap-2">
                         <div className={messageItemStyle(message)}>
                             <Item className={"flex flex-row justify-between w-1/3 "+ itemContentStyle(message)} variant="outline">
