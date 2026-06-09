@@ -23,7 +23,7 @@ Currently:
 
 ## 🛠️ Technologies
 
-### 
+### Backend
 - Java 21 + Spring Boot 4.0.5
 - Spring Web MVC
 - Spring Data JPA
@@ -138,6 +138,8 @@ cd backend
 
 # OR with debug mode enabled
 ./mvnw spring-boot:run "-Dspring-boot.run.arguments=--debug"
+```
+
 ---
 
 **Build the application**
@@ -192,24 +194,56 @@ The frontend will be available at: [frontend localhost](http://localhost:5173)
 
 ---
 
-### 3️⃣ ngrok Tunneling (Free Plan)
-The free ngrok plan injects a browser warning page that breaks CORS and Websocket connections.
+### 3️⃣ ngrok Tunneling Setup
 
-To bypass it, **every Axios request must include:**.
+To expose your local backend to the internet (for mobile testing or WebSocket tunneling), install and run ngrok:
 
-```TypeScript
+#### 1. Install ngrok
+
+Download it from: https://ngrok.com/download
+
+#### 2. Authenticate (one-time setup)
+
+After installing, run:
+
+```bash
+ngrok config add-authtoken <YOUR_NGROK_TOKEN>
+```
+
+#### 3. Expose backend on port 8080
+
+```bash
+ngrok http 8080
+```
+
+You will see output similar to:
+
+```
+Forwarding    https://<your-domain>.ngrok-free.app -> http://localhost:8080
+```
+
+Use this HTTPS URL as the backend base URL in the frontend.
+
+#### 4. WebSocket URL example
+
+```
+wss://<your-domain>.ngrok-free.app/ws-raw
+```
+
+#### 5. Important note (free plan)
+
+The free ngrok plan injects a browser warning page that breaks CORS and WebSocket connections.
+
+To bypass it, every Axios request must include:
+
+```
 "ngrok-skip-browser-warning": "true"
 ```
 
-This is already configured in:
+This header is already configured in:
 
-```bash
+```
 frontend/src/authentication/authClient.ts
-```
-
-### WebSocket URL example:
-```
-wss://<your-ngrok-domain>.ngrok-free-dev/ws-raw
 ```
 
 ### Refresh Token Cookie
@@ -233,7 +267,7 @@ This ensures compatibility with:
 
 ---
 
-### 3️⃣ Code Quality Analysis (SonarQube)
+### 4️⃣ Code Quality Analysis (SonarQube)
 
 Ensure SonarQube container is running (see step 1).
 
